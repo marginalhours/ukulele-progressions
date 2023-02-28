@@ -1,5 +1,6 @@
 <script lang="ts">
-		import ChordPanel from './ChordPanel.svelte';
+	import ChordPanel from './ChordPanel.svelte';
+	import { Interval } from './types';
 </script>
 
 <svelte:head>
@@ -8,11 +9,11 @@
 </svelte:head>
 
 <section>
-	<ChordPanel --background-color='#ff6978'/>
-	<ChordPanel --background-color='#fffcf9'/>
-	<ChordPanel --background-color='#b1ede8'/>
-	<ChordPanel --background-color='#6d435a'/>
-	<ChordPanel --background-color='#340068'/>
+	<ChordPanel interval={Interval.FIRST} />
+	<ChordPanel interval={Interval.FIFTH} />
+	<ChordPanel interval={Interval.SIXTH} />
+	<ChordPanel interval={Interval.FOURTH} />
+	<!-- <ChordPanel interval={Interval.SECOND} /> -->
 </section>
 
 <style>
@@ -23,5 +24,4 @@
 		align-items: center;
 		height: 100%;
 	}
-
 </style>
