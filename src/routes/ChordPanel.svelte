@@ -4,6 +4,9 @@
 	import { Interval } from './types';
 
 	export let interval: Interval;
+	export let chordName: string = 'Am7';
+	export let fretted: (number | null)[];
+	export let lowestFret: number = 0;
 
 	const BACKGROUNDS = {
 		[Interval.FIRST]: '#9b5fe0',
@@ -19,8 +22,8 @@
 </script>
 
 <div class="chord-panel" style="--background-color: {backgroundColor}">
-	<ChordDiagram />
-	<div class="chord-name">G# minor</div>
+	<ChordDiagram {fretted} {lowestFret} />
+	<div class="chord-name">{chordName}</div>
 	<div class="chord-role">{interval}</div>
 </div>
 
