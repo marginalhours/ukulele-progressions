@@ -1,10 +1,11 @@
 <script lang="ts">
 	import { spring } from 'svelte/motion';
 	import ChordDiagram from './ChordDiagram.svelte';
-	import { IntervalNumber, Interval } from '../lib/music/intervals';
+	import { IntervalNumber, intervalToString, type Interval } from '../lib/music/intervals';
+	import { chordToString, type Chord } from '../lib/music/chords';
 
 	export let interval: Interval;
-	export let chordName: string = 'Am7';
+	export let chord: Chord;
 	export let fretted: (number | null)[];
 	export let lowestFret: number = 0;
 
@@ -24,8 +25,8 @@
 
 <div class="chord-panel" style="--background-color: {backgroundColor}">
 	<ChordDiagram {fretted} {lowestFret} />
-	<div class="chord-name">{chordName}</div>
-	<div class="chord-role">{interval}</div>
+	<div class="chord-name">{chordToString(chord)}</div>
+	<div class="chord-role">{intervalToString(interval)}</div>
 </div>
 
 <style>

@@ -2,29 +2,31 @@
 	import ChordPanel from './ChordPanel.svelte';
 	import { Instrument } from '../lib/music/instrument';
 	import { progression, type Interval } from '../lib/music/intervals';
-	import type { Pitch } from '../lib/music/pitch';
+	import { pitches, transposePitch, type Pitch } from '../lib/music/pitch';
+	import { ChordType, intervalToChord, type Chord } from '../lib/music/chords';
+	import { choose } from '../lib/utilities';
 
 	const ukulele = new Instrument(['G', 'C', 'E', 'A'], 18);
 
-	// console.log(ukulele.getFrets({ tonic: 'G', type: ChordType.MAJOR }));
+	const progressions = [
+		progression`I-IV-V`, // the theoretical minimum
+		progression`ii-V-I`, // jazzy (?)
+		progression`vi-IV-I-V`, // 4 chords
+		progression`I-vi-IV-V`, // 1950s do-wop
+		progression`I-V-vi-iii-IV-I-IV-V` // hey pachelbel
+	];
 
-	let sequence: Interval[] = progression`I iii IV V`;
-
-	console.log(sequence);
+	let sequence: Interval[] = progressions[1];
 
 	let tonic: Pitch = 'C';
-	let chordNames: Pitch[] = [];
-	let sequenceFrets: number[][] = [];
+	let chords: Chord[] = sequence.map((interval) => intervalToChord(tonic, interval));
+	let sequenceFrets: number[][] = chords.map((chord) => ukulele.getFrets(chord).fretting);
 
 	const onKeyDown = (e: KeyboardEvent) => {
 		if (e.code == 'Space') {
-			// tonic = choose(pitches);
-			const semitoneSequence = sequence.map((x) => intervalToSemitones[x]);
-			chordNames = semitoneSequence.map((semitones) => transposePitch(tonic, semitones));
-			sequenceFrets = chordNames.map(
-				(chordName) => ukulele.getFrets({ tonic: chordName, type: ChordType.MAJOR }).fretting
-			);
-			console.log(sequenceFrets);
+			tonic = choose(pitches);
+			chords = sequence.map((interval) => intervalToChord(tonic, interval));
+			sequenceFrets = chords.map((chord) => ukulele.getFrets(chord).fretting);
 		}
 	};
 </script>
@@ -35,10 +37,9 @@
 </svelte:head>
 
 <section>
-	<ChordPanel interval={sequence[0]} chordName={chordNames[0]} fretted={sequenceFrets[0]} />
-	<ChordPanel interval={sequence[1]} chordName={chordNames[1]} fretted={sequenceFrets[1]} />
-	<ChordPanel interval={sequence[2]} chordName={chordNames[2]} fretted={sequenceFrets[2]} />
-	<ChordPanel interval={sequence[3]} chordName={chordNames[3]} fretted={sequenceFrets[3]} />
+	{#each chords as _, index}
+		<ChordPanel interval={sequence[index]} chord={chords[index]} fretted={sequenceFrets[index]} />
+	{/each}
 </section>
 
 <svelte:window on:keydown={onKeyDown} />

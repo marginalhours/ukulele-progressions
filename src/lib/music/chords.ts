@@ -2,7 +2,24 @@
  * This file contains types and helpers for working with chords
  */
 
-import type { Pitch } from './pitch';
+import { IntervalQuality, type Interval, intervalNumberInSemitones } from './intervals';
+import { transposePitch, type Pitch } from './pitch';
+
+export const intervalToChord = (tonic: Pitch, interval: Interval): Chord => {
+	const chordPitch = transposePitch(tonic, intervalNumberInSemitones(interval));
+
+	let chordType: ChordType = ChordType.MAJOR;
+	switch (interval.quality) {
+		case IntervalQuality.MAJOR:
+			chordType = ChordType.MAJOR;
+			break;
+		case IntervalQuality.MINOR:
+			chordType = ChordType.MINOR;
+			break;
+	}
+
+	return { tonic: chordPitch, type: chordType };
+};
 
 export enum ChordType {
 	MAJOR = 'major',
@@ -24,6 +41,17 @@ export const getChordPitches = (chord: Chord): Set<Pitch> => {
 		case ChordType.MINOR:
 			return new Set([chord.tonic, transposePitch(chord.tonic, 3), transposePitch(chord.tonic, 7)]);
 	}
+};
+
+export const chordToString = ({ tonic, type }: Chord): string => {
+	let chordString = tonic;
+
+	switch (type) {
+		case ChordType.MINOR:
+			chordString += 'm';
+	}
+
+	return chordString;
 };
 
 // ⁷

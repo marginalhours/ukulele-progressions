@@ -15,6 +15,13 @@ export enum IntervalNumber {
 	OCTAVE = 'VIII'
 }
 
+const PERFECTS = [
+	IntervalNumber.FIRST,
+	IntervalNumber.FOURTH,
+	IntervalNumber.FIFTH,
+	IntervalNumber.OCTAVE
+];
+
 export enum IntervalQuality {
 	PERFECT = 'perfect',
 	MAJOR = 'major',
@@ -28,7 +35,7 @@ export type Interval = {
 	quality: IntervalQuality;
 };
 
-export const intervalNumberToSemitones: { [key in IntervalNumber]: number } = {
+const intervalNumberToSemitones: { [key in IntervalNumber]: number } = {
 	[IntervalNumber.FIRST]: 0,
 	[IntervalNumber.SECOND]: 2,
 	[IntervalNumber.THIRD]: 4,
@@ -39,12 +46,27 @@ export const intervalNumberToSemitones: { [key in IntervalNumber]: number } = {
 	[IntervalNumber.OCTAVE]: 12
 };
 
-export const intervalQualityToSemitones: { [key in IntervalQuality]: number } = {
-	[IntervalQuality.DIMINISHED]: -1,
-	[IntervalQuality.MINOR]: -1,
-	[IntervalQuality.PERFECT]: 0,
-	[IntervalQuality.MAJOR]: 0,
-	[IntervalQuality.AUGMENTED]: 1
+/** Just the semitones required to reach a different letter number */
+export const intervalNumberInSemitones = ({ number }: Interval): number => {
+	return intervalNumberToSemitones[number];
+};
+
+export const qualityModifierInSemitones = ({ number, quality }: Interval) => {
+	if (quality === IntervalQuality.MINOR) {
+		return -1;
+	}
+	if (quality === IntervalQuality.DIMINISHED) {
+		return PERFECTS.includes(number) ? -1 : -2;
+	}
+	if (quality === IntervalQuality.AUGMENTED) {
+		return PERFECTS.includes(number) ? 1 : 2;
+	}
+
+	return 0;
+};
+
+export const toSemitonesFromTonic = (interval: Interval): number => {
+	return intervalNumberToSemitones[interval.number] + qualityModifierInSemitones(interval);
 };
 
 export const qualityMap: { [key in IntervalQuality]: string } = {
@@ -57,7 +79,8 @@ export const qualityMap: { [key in IntervalQuality]: string } = {
 
 /** Gives guitar-style chord notation */
 export const intervalToString = (interval: Interval): string => {
-	const number = IntervalQuality.MINOR ? interval.number.toLowerCase() : interval.number;
+	const number =
+		interval.quality === IntervalQuality.MINOR ? interval.number.toLowerCase() : interval.number;
 	const quality = qualityMap[interval.quality];
 
 	return `${number}${quality}`;
@@ -74,23 +97,12 @@ export const intervalToString = (interval: Interval): string => {
 // perfect+1:augmented
 // perfect-1:diminished
 
-const PERFECTS = [
-	IntervalNumber.FIRST,
-	IntervalNumber.FOURTH,
-	IntervalNumber.FIFTH,
-	IntervalNumber.OCTAVE
-];
-const MAJORS = [
-	IntervalNumber.SECOND,
-	IntervalNumber.THIRD,
-	IntervalNumber.SIXTH,
-	IntervalNumber.SEVENTH
-];
-
 /*
  * Turn a guitar-style interval (vii, Vdim etc) into an Interval object
  */
 export const parseInterval = (intervalString: string): Interval | null => {
+	// This regex needs a leading b for flats (boo) and possibly for 7ths and 6ths or slash chords
+	// lads by the time we're talking bV7 are we really talking 'intervals' at all any more; is that not just a chord
 	const matches = intervalString.match(/(^[VI]+|^[vi]+)(aug|dim){0,1}/);
 
 	if (matches === null) {
@@ -114,20 +126,6 @@ export const parseInterval = (intervalString: string): Interval | null => {
 	}
 
 	return { number, quality };
-};
-
-export const qualityModifierInSemitones = ({ number, quality }: Interval) => {
-	if (quality === IntervalQuality.MINOR) {
-		return -1;
-	}
-	if (quality === IntervalQuality.DIMINISHED) {
-		return PERFECTS.includes(number) ? -1 : -2;
-	}
-	if (quality === IntervalQuality.AUGMENTED) {
-		return PERFECTS.includes(number) ? 1 : 2;
-	}
-
-	return 0;
 };
 
 /*

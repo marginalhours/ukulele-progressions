@@ -1,4 +1,5 @@
-import type { Pitch } from './pitch';
+import { getChordPitches, type Chord } from './chords';
+import { getStringPitches, type Pitch } from './pitch';
 
 const findMatchingFretNumbers = (pitches: Pitch[], chordPitches: Set<Pitch>): number[] => {
 	return pitches.reduce((matchingFrets, pitch, index) => {
@@ -14,6 +15,8 @@ interface FrettingEvaluation {
 }
 
 const scoreFretting = (frets: number[]): FrettingEvaluation => {
+	// TODO: Don't work just with frets - needs to take into account instrument pitches
+	// For things like scoring number of distinct pitches etc
 	const openStrings = frets.filter((fretPosition) => fretPosition === 0).length;
 
 	const fretsWithoutOpens = frets.filter((f) => f !== 0);
@@ -72,7 +75,6 @@ export class Instrument {
 
 	/**
 	 * Gets best possible fretting of a given chord
-	 * @param chord
 	 */
 	getFrets(chord: Chord) {
 		const chordPitches = getChordPitches(chord);
@@ -84,8 +86,8 @@ export class Instrument {
 		// now can combine - heuristics are something like:
 		// - lower frets is good
 		// - lower inter-fret distance is good
+		// - *variety of notes* is good, don't want 2 same pitch if avoidable (this currently does Em wrong for instance)
 		// - bars! can never have "behind bar" eg 7776 but can have "in front" eg 7789
-		// - after that it's just combining them I guess?
 		const frets = generateFrettings(acceptableFrets)
 			.map(scoreFretting)
 			.filter(filterFrettings)
