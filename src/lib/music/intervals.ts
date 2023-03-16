@@ -129,3 +129,10 @@ export const qualityModifierInSemitones = ({ number, quality }: Interval) => {
 
 	return 0;
 };
+
+/*
+ * Fancy tagged template literal for writing progressions like progression`I iii IV V`
+ */
+export const progression = (strings: TemplateStringsArray, ...values: any): Interval[] => {
+	return strings[0].split(/[\s-]/).map(parseInterval) as Interval[];
+};

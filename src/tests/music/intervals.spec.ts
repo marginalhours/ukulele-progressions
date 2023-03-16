@@ -1,4 +1,9 @@
-import { IntervalNumber, IntervalQuality, parseInterval } from '../../lib/music/intervals';
+import {
+	IntervalNumber,
+	IntervalQuality,
+	parseInterval,
+	progression
+} from '../../lib/music/intervals';
 
 describe('parseInterval', () => {
 	it('should parse a major chord', () => {
@@ -36,5 +41,24 @@ describe('parseInterval', () => {
 			number: IntervalNumber.THIRD,
 			quality: IntervalQuality.DIMINISHED
 		});
+	});
+});
+
+describe('progression', () => {
+	it('should parse a I iii IV V progression', () => {
+		expect(progression`I iii IV V`).toStrictEqual([
+			parseInterval('I'),
+			parseInterval('iii'),
+			parseInterval('IV'),
+			parseInterval('V')
+		]);
+	});
+	it('should parse a I-iii-IV-V progression', () => {
+		expect(progression`I iii IV V`).toStrictEqual([
+			parseInterval('I'),
+			parseInterval('iii'),
+			parseInterval('IV'),
+			parseInterval('V')
+		]);
 	});
 });

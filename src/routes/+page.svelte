@@ -1,18 +1,16 @@
 <script lang="ts">
 	import ChordPanel from './ChordPanel.svelte';
 	import { Instrument } from '../lib/music/instrument';
-	import { IntervalNumber } from '$lib/music/intervals';
+	import { progression, type Interval } from '../lib/music/intervals';
+	import type { Pitch } from '../lib/music/pitch';
 
 	const ukulele = new Instrument(['G', 'C', 'E', 'A'], 18);
 
 	// console.log(ukulele.getFrets({ tonic: 'G', type: ChordType.MAJOR }));
 
-	let sequence: Interval[] = [
-		Interval.TONIC,
-		Interval.MINOR_THIRD,
-		Interval.PERFECT_FOURTH,
-		Interval.PERFECT_FIFTH
-	];
+	let sequence: Interval[] = progression`I iii IV V`;
+
+	console.log(sequence);
 
 	let tonic: Pitch = 'C';
 	let chordNames: Pitch[] = [];
