@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { spring } from 'svelte/motion';
 	import ChordDiagram from './ChordDiagram.svelte';
-	import { Interval } from './types';
+	import { IntervalNumber, Interval } from '../lib/music/intervals';
 
 	export let interval: Interval;
 	export let chordName: string = 'Am7';
@@ -9,16 +9,17 @@
 	export let lowestFret: number = 0;
 
 	const BACKGROUNDS = {
-		[Interval.FIRST]: '#9b5fe0',
-		[Interval.SECOND]: '#16a4d8',
-		[Interval.THIRD]: '#60dbe8',
-		[Interval.FOURTH]: '#8bd346',
-		[Interval.FIFTH]: '#efdf48',
-		[Interval.SIXTH]: '#f9a52c',
-		[Interval.SEVENTH]: '#d64e12'
+		[IntervalNumber.FIRST]: '#9b5fe0',
+		[IntervalNumber.SECOND]: '#16a4d8',
+		[IntervalNumber.THIRD]: '#60dbe8',
+		[IntervalNumber.FOURTH]: '#8bd346',
+		[IntervalNumber.FIFTH]: '#efdf48',
+		[IntervalNumber.SIXTH]: '#f9a52c',
+		[IntervalNumber.SEVENTH]: '#d64e12',
+		[IntervalNumber.OCTAVE]: '#9b5fe0'
 	};
 
-	$: backgroundColor = BACKGROUNDS[interval];
+	$: backgroundColor = BACKGROUNDS[interval.number];
 </script>
 
 <div class="chord-panel" style="--background-color: {backgroundColor}">

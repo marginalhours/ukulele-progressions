@@ -1,57 +1,6 @@
-import { Interval, type Chord, type PitchString, ChordType } from './types';
+import type { Pitch } from './pitch';
 
-export const pitches: PitchString[] = [
-	'C',
-	'C#',
-	'D',
-	'D#',
-	'E',
-	'F',
-	'F#',
-	'G',
-	'G#',
-	'A',
-	'A#',
-	'B'
-];
-
-const pitchToIndex: { [key: string]: number } = {
-	C: 0,
-	'C#': 1,
-	D: 2,
-	'D#': 3,
-	E: 4,
-	F: 5,
-	'F#': 6,
-	G: 7,
-	'G#': 8,
-	A: 9,
-	'A#': 10,
-	B: 11
-};
-
-export const transposePitch = (pitch: PitchString, semitones: number): PitchString => {
-	const pitchIndex = pitchToIndex[pitch];
-	return pitches[(pitchIndex + semitones) % pitches.length];
-};
-
-const getChordPitches = (chord: Chord): Set<PitchString> => {
-	switch (chord.type) {
-		case ChordType.MAJOR:
-			return new Set([chord.tonic, transposePitch(chord.tonic, 4), transposePitch(chord.tonic, 7)]);
-		case ChordType.MINOR:
-			return new Set([chord.tonic, transposePitch(chord.tonic, 3), transposePitch(chord.tonic, 7)]);
-	}
-};
-
-const getStringPitches = (string: PitchString, frets: number) => {
-	return Array.from(Array(frets).keys()).map((semitones) => transposePitch(string, semitones));
-};
-
-const findMatchingFretNumbers = (
-	pitches: PitchString[],
-	chordPitches: Set<PitchString>
-): number[] => {
+const findMatchingFretNumbers = (pitches: Pitch[], chordPitches: Set<Pitch>): number[] => {
 	return pitches.reduce((matchingFrets, pitch, index) => {
 		return chordPitches.has(pitch) ? [...matchingFrets, index] : matchingFrets;
 	}, [] as number[]);
@@ -102,6 +51,7 @@ const generateFrettings = (frets: number[][]): number[][] => {
 		return frets[0].map((fretPosition) => [fretPosition]);
 	}
 
+	// Otherwise, it's every position on the first string x all valid positions on other strings, recursively
 	const remainingStrings = generateFrettings(frets.slice(1));
 
 	return frets[0]
@@ -112,16 +62,16 @@ const generateFrettings = (frets: number[][]): number[][] => {
 };
 
 export class Instrument {
-	pitches: PitchString[];
+	pitches: Pitch[];
 	frets: number;
 
-	constructor(pitches: PitchString[], frets: number) {
+	constructor(pitches: Pitch[], frets: number) {
 		this.pitches = pitches;
 		this.frets = frets;
 	}
 
 	/**
-	 * Gets all possible frettings of a given chord
+	 * Gets best possible fretting of a given chord
 	 * @param chord
 	 */
 	getFrets(chord: Chord) {
