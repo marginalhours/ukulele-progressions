@@ -41,12 +41,6 @@
 		--background: rgba(255, 255, 255, 0.7);
 	}
 
-	svg {
-		width: 2em;
-		height: 3em;
-		display: block;
-	}
-
 	path {
 		fill: var(--background);
 	}
