@@ -1,6 +1,5 @@
 <script lang="ts">
 	import { fade } from 'svelte/transition';
-	import { tweened } from 'svelte/motion';
 
 	interface DiagramStyle {
 		// Colors
@@ -216,7 +215,6 @@
 	.chord-diagram {
 		width: 80%;
 		height: 100%;
-		border: 1px solid #000;
 		filter: drop-shadow(3px 5px 2px rgb(0 0 0 / 0.4));
 	}
 
