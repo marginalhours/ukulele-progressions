@@ -1,12 +1,10 @@
 <script lang="ts">
 	import ChordPanel from './ChordPanel.svelte';
-	import { Instrument } from '../lib/music/instrument';
-	import { progression, type Interval } from '../lib/music/intervals';
-	import { pitches, transposePitch, type Pitch } from '../lib/music/pitch';
-	import { ChordType, intervalToChord, type Chord } from '../lib/music/chords';
+	import { progression, type RelativeChord } from '../lib/music/relativeChord';
+	import { pitches, type Pitch } from '../lib/music/pitch';
+	import { intervalToChord, type Chord } from '../lib/music/chords';
 	import { choose } from '../lib/utilities';
-
-	const ukulele = new Instrument(['G', 'C', 'E', 'A'], 18);
+	import { getFrettingForChord } from '$lib/frettings';
 
 	const progressions = [
 		progression`I-IV-V`, // the theoretical minimum
@@ -16,17 +14,17 @@
 		progression`I-V-vi-iii-IV-I-IV-V` // hey pachelbel
 	];
 
-	let sequence: Interval[] = progressions[1];
+	let sequence: RelativeChord[] = progressions[3];
 
 	let tonic: Pitch = 'C';
 	let chords: Chord[] = sequence.map((interval) => intervalToChord(tonic, interval));
-	let sequenceFrets: number[][] = chords.map((chord) => ukulele.getFrets(chord).fretting);
+	let sequenceFrets: number[][] = chords.map(getFrettingForChord);
 
 	const onKeyDown = (e: KeyboardEvent) => {
 		if (e.code == 'Space') {
 			tonic = choose(pitches);
 			chords = sequence.map((interval) => intervalToChord(tonic, interval));
-			sequenceFrets = chords.map((chord) => ukulele.getFrets(chord).fretting);
+			sequenceFrets = chords.map(getFrettingForChord);
 		}
 	};
 </script>
@@ -38,7 +36,11 @@
 
 <section>
 	{#each chords as _, index}
-		<ChordPanel interval={sequence[index]} chord={chords[index]} fretted={sequenceFrets[index]} />
+		<ChordPanel
+			relativeChord={sequence[index]}
+			chord={chords[index]}
+			fretted={sequenceFrets[index]}
+		/>
 	{/each}
 </section>
 

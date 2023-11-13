@@ -80,7 +80,7 @@
 		</div>
 	</div>
 	<div style={wrapperStyle}>
-		<ChordDiagram {fretted} stravaganza={string1} />
+		<ChordDiagram {fretted} />
 	</div>
 </section>
 

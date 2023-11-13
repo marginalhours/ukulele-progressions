@@ -2,9 +2,7 @@
  * This file contains types and helpers for working with pitches
  */
 
-export type Pitch = 'C' | 'C#' | 'D' | 'D#' | 'E' | 'F' | 'F#' | 'G' | 'G#' | 'A' | 'A#' | 'B';
-
-export type PitchWithFlats = Pitch | 'Bb' | 'Ab' | 'Gb' | 'Eb' | 'Db';
+import type { Pitch } from './types';
 
 export const pitches: Pitch[] = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B'];
 

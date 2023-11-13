@@ -1,45 +1,40 @@
-import {
-	IntervalNumber,
-	IntervalQuality,
-	parseInterval,
-	progression
-} from '../../lib/music/intervals';
+import { parseRelativeChord, progression } from '../../lib/music/relativeChord';
 
 describe('parseInterval', () => {
 	it('should parse a major chord', () => {
-		expect(parseInterval('VII')).toStrictEqual({
-			number: IntervalNumber.SEVENTH,
-			quality: IntervalQuality.MAJOR
+		expect(parseRelativeChord('VII')).toStrictEqual({
+			number: 'VII',
+			quality: 'major'
 		});
 	});
 	it('should parse a minor chord', () => {
-		expect(parseInterval('vii')).toStrictEqual({
-			number: IntervalNumber.SEVENTH,
-			quality: IntervalQuality.MINOR
+		expect(parseRelativeChord('vii')).toStrictEqual({
+			number: 'VII',
+			quality: 'minor'
 		});
 	});
 	it('should parse a perfect fifth', () => {
-		expect(parseInterval('V')).toEqual({
-			number: IntervalNumber.FIFTH,
-			quality: IntervalQuality.PERFECT
+		expect(parseRelativeChord('V')).toEqual({
+			number: 'V',
+			quality: 'major'
 		});
 	});
 	it('should parse an augmented fourth', () => {
-		expect(parseInterval('IVaug')).toEqual({
-			number: IntervalNumber.FOURTH,
-			quality: IntervalQuality.AUGMENTED
+		expect(parseRelativeChord('IVaug')).toEqual({
+			number: 'IV',
+			quality: 'augmented'
 		});
 	});
 	it('should parse a major third', () => {
-		expect(parseInterval('III')).toEqual({
-			number: IntervalNumber.THIRD,
-			quality: IntervalQuality.MAJOR
+		expect(parseRelativeChord('III')).toEqual({
+			number: 'III',
+			quality: 'major'
 		});
 	});
 	it('should parse a diminished third', () => {
-		expect(parseInterval('iiidim')).toEqual({
-			number: IntervalNumber.THIRD,
-			quality: IntervalQuality.DIMINISHED
+		expect(parseRelativeChord('iiidim')).toEqual({
+			number: 'III',
+			quality: 'diminished'
 		});
 	});
 });
@@ -47,18 +42,18 @@ describe('parseInterval', () => {
 describe('progression', () => {
 	it('should parse a I iii IV V progression', () => {
 		expect(progression`I iii IV V`).toStrictEqual([
-			parseInterval('I'),
-			parseInterval('iii'),
-			parseInterval('IV'),
-			parseInterval('V')
+			parseRelativeChord('I'),
+			parseRelativeChord('iii'),
+			parseRelativeChord('IV'),
+			parseRelativeChord('V')
 		]);
 	});
 	it('should parse a I-iii-IV-V progression', () => {
 		expect(progression`I iii IV V`).toStrictEqual([
-			parseInterval('I'),
-			parseInterval('iii'),
-			parseInterval('IV'),
-			parseInterval('V')
+			parseRelativeChord('I'),
+			parseRelativeChord('iii'),
+			parseRelativeChord('IV'),
+			parseRelativeChord('V')
 		]);
 	});
 });

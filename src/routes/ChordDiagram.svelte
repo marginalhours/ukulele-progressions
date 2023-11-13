@@ -1,4 +1,8 @@
 <script lang="ts">
+	/**
+	 * This is the single component file for rendering SVG chord diagrams.
+	 * It powers a lot of the app.
+	 */
 	import { fade } from 'svelte/transition';
 
 	interface DiagramStyle {
@@ -19,18 +23,17 @@
 		dotColor: '#111',
 		lineColor: '#333',
 		lineWidth: 3,
-		verticalMargin: 25,
+		verticalMargin: 15,
 		horizontalMargin: 25
 	};
 
-	export let stravaganza: number;
 	export let fretted: (number | null)[] = [];
 	export let style: DiagramStyle = defaultDiagramStyle;
 
 	// Layout calculations
 
 	const diagramWidth = 120;
-	const diagramHeight = 180;
+	const diagramHeight = 150;
 	const dotRadius = 10;
 	const labelFontSize = 24;
 
@@ -72,162 +75,148 @@
 	];
 </script>
 
-<div class="chord-diagram-wrapper">
-	<svg
-		class="chord-diagram"
-		viewBox="0 0 {diagramWidth} {diagramHeight}"
-		xmlns="http://www.w3.org/2000/svg"
-	>
-		<!-- Fretboard top line -->
-		{#if lowestFret == 0}
-			<rect
-				x={diagramStyle.horizontalMargin}
-				y={diagramStyle.verticalMargin - diagramStyle.lineWidth}
-				width={boardWidth}
-				height={diagramStyle.lineWidth * 2}
-				stroke={diagramStyle.lineColor}
-				fill={diagramStyle.lineColor}
-				stroke-width={diagramStyle.lineWidth}
-				rx={diagramStyle.lineWidth}
-				ry={diagramStyle.lineWidth}
-				stroke-linejoin="round"
-			/>
-		{/if}
-
-		<!-- Board -->
+<svg
+	class="chord-diagram"
+	viewBox="0 0 {diagramWidth} {diagramHeight}"
+	xmlns="http://www.w3.org/2000/svg"
+>
+	<!-- Fretboard top line -->
+	{#if lowestFret == 0}
 		<rect
 			x={diagramStyle.horizontalMargin}
-			y={diagramStyle.verticalMargin}
+			y={diagramStyle.verticalMargin - diagramStyle.lineWidth}
 			width={boardWidth}
-			height={boardHeight}
+			height={diagramStyle.lineWidth * 2}
 			stroke={diagramStyle.lineColor}
-			fill={diagramStyle.boardColor}
+			fill={diagramStyle.lineColor}
 			stroke-width={diagramStyle.lineWidth}
 			rx={diagramStyle.lineWidth}
 			ry={diagramStyle.lineWidth}
 			stroke-linejoin="round"
 		/>
+	{/if}
 
-		<!-- Middle strings -->
-		<rect
-			x={stringXcoords[0]}
-			y={diagramStyle.verticalMargin}
-			width={diagramStyle.lineWidth}
-			height={boardHeight}
-			fill={diagramStyle.lineColor}
-		/>
-		<rect
-			x={stringXcoords[1]}
-			y={diagramStyle.verticalMargin}
-			width={diagramStyle.lineWidth}
-			height={boardHeight}
-			fill={diagramStyle.lineColor}
-		/>
+	<!-- Board -->
+	<rect
+		x={diagramStyle.horizontalMargin}
+		y={diagramStyle.verticalMargin}
+		width={boardWidth}
+		height={boardHeight}
+		stroke={diagramStyle.lineColor}
+		fill={diagramStyle.boardColor}
+		stroke-width={diagramStyle.lineWidth}
+		rx={diagramStyle.lineWidth}
+		ry={diagramStyle.lineWidth}
+		stroke-linejoin="round"
+	/>
 
-		<!-- Fret lines -->
-		<rect
-			x={diagramStyle.horizontalMargin}
-			y={fretYcoords[0]}
-			width={boardWidth}
-			height={diagramStyle.lineWidth}
-			fill={diagramStyle.lineColor}
-		/>
-		<rect
-			x={diagramStyle.horizontalMargin}
-			y={fretYcoords[1]}
-			width={boardWidth}
-			height={diagramStyle.lineWidth}
-			fill={diagramStyle.lineColor}
-		/>
-		<rect
-			x={diagramStyle.horizontalMargin}
-			y={fretYcoords[2]}
-			width={boardWidth}
-			height={diagramStyle.lineWidth}
-			fill={diagramStyle.lineColor}
-		/>
-		<rect
-			x={diagramStyle.horizontalMargin}
-			y={fretYcoords[3]}
-			width={boardWidth}
-			height={diagramStyle.lineWidth}
-			fill={diagramStyle.lineColor}
-		/>
+	<!-- Middle strings -->
+	<rect
+		x={stringXcoords[0]}
+		y={diagramStyle.verticalMargin}
+		width={diagramStyle.lineWidth}
+		height={boardHeight}
+		fill={diagramStyle.lineColor}
+	/>
+	<rect
+		x={stringXcoords[1]}
+		y={diagramStyle.verticalMargin}
+		width={diagramStyle.lineWidth}
+		height={boardHeight}
+		fill={diagramStyle.lineColor}
+	/>
 
-		<!-- Fretted strings -->
-		{#if relativeFrets[0] > 0}
-			<circle
-				class="chord-diagram-note"
-				transition:fade
-				fill={diagramStyle.dotColor}
-				cx={dotXcoords[0]}
-				cy={dotYCoords[0]}
-				r={dotRadius}
-			/>
-		{/if}
-		{#if relativeFrets[1] > 0}
-			<circle
-				class="chord-diagram-note"
-				transition:fade
-				fill={diagramStyle.dotColor}
-				cx={dotXcoords[1]}
-				cy={dotYCoords[1]}
-				r={dotRadius}
-			/>
-		{/if}
-		{#if relativeFrets[2] > 0}
-			<circle
-				class="chord-diagram-note"
-				transition:fade
-				fill={diagramStyle.dotColor}
-				cx={dotXcoords[2]}
-				cy={dotYCoords[2]}
-				r={dotRadius}
-			/>
-		{/if}
-		{#if relativeFrets[3] > 0}
-			<circle
-				class="chord-diagram-note"
-				transition:fade
-				fill={diagramStyle.dotColor}
-				cx={dotXcoords[3]}
-				cy={dotYCoords[3]}
-				r={dotRadius}
-			/>
-		{/if}
+	<!-- Fret lines -->
+	<rect
+		x={diagramStyle.horizontalMargin}
+		y={fretYcoords[0]}
+		width={boardWidth}
+		height={diagramStyle.lineWidth}
+		fill={diagramStyle.lineColor}
+	/>
+	<rect
+		x={diagramStyle.horizontalMargin}
+		y={fretYcoords[1]}
+		width={boardWidth}
+		height={diagramStyle.lineWidth}
+		fill={diagramStyle.lineColor}
+	/>
+	<rect
+		x={diagramStyle.horizontalMargin}
+		y={fretYcoords[2]}
+		width={boardWidth}
+		height={diagramStyle.lineWidth}
+		fill={diagramStyle.lineColor}
+	/>
+	<rect
+		x={diagramStyle.horizontalMargin}
+		y={fretYcoords[3]}
+		width={boardWidth}
+		height={diagramStyle.lineWidth}
+		fill={diagramStyle.lineColor}
+	/>
 
-		<!-- First fret label -->
-		{#if lowestFret > 0}
-			<text
-				x={fretLabelXcoord}
-				y={fretLabelYCoord}
-				class="chord-diagram-fret-label"
-				font-size={labelFontSize}
-				dominant-baseline="central"
-				text-anchor="middle"
-				>{lowestFret}
-			</text>
-		{/if}
-	</svg>
-</div>
+	<!-- Fretted strings -->
+	{#if relativeFrets[0] > 0}
+		<circle
+			class="chord-diagram-note"
+			transition:fade
+			fill={diagramStyle.dotColor}
+			cx={dotXcoords[0]}
+			cy={dotYCoords[0]}
+			r={dotRadius}
+		/>
+	{/if}
+	{#if relativeFrets[1] > 0}
+		<circle
+			class="chord-diagram-note"
+			transition:fade
+			fill={diagramStyle.dotColor}
+			cx={dotXcoords[1]}
+			cy={dotYCoords[1]}
+			r={dotRadius}
+		/>
+	{/if}
+	{#if relativeFrets[2] > 0}
+		<circle
+			class="chord-diagram-note"
+			transition:fade
+			fill={diagramStyle.dotColor}
+			cx={dotXcoords[2]}
+			cy={dotYCoords[2]}
+			r={dotRadius}
+		/>
+	{/if}
+	{#if relativeFrets[3] > 0}
+		<circle
+			class="chord-diagram-note"
+			transition:fade
+			fill={diagramStyle.dotColor}
+			cx={dotXcoords[3]}
+			cy={dotYCoords[3]}
+			r={dotRadius}
+		/>
+	{/if}
+
+	<!-- First fret label -->
+	{#if lowestFret > 0}
+		<text
+			x={fretLabelXcoord}
+			y={fretLabelYCoord}
+			class="chord-diagram-fret-label"
+			font-size={labelFontSize}
+			dominant-baseline="central"
+			text-anchor="middle"
+			>{lowestFret + 1}
+		</text>
+	{/if}
+</svg>
 
 <style>
 	.chord-diagram {
-		width: 80%;
-		height: 100%;
 		filter: drop-shadow(3px 5px 2px rgb(0 0 0 / 0.4));
 	}
 
-	.chord-diagram-wrapper {
-		box-sizing: border-box;
-		position: relative;
-		margin-bottom: 2rem;
-		display: flex;
-		justify-content: center;
-		align-items: center;
-		width: 100%;
-		height: 100%;
-	}
 	.chord-diagram-note {
 		transition: cy 300ms ease-in-out;
 	}

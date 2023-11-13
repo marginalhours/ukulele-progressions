@@ -1,43 +1,45 @@
 <script lang="ts">
-	import { spring } from 'svelte/motion';
 	import ChordDiagram from './ChordDiagram.svelte';
-	import { IntervalNumber, intervalToString, type Interval } from '../lib/music/intervals';
+	import { relativeChordToString, type RelativeChord } from '../lib/music/relativeChord';
 	import { chordToString, type Chord } from '../lib/music/chords';
 
-	export let interval: Interval;
+	export let relativeChord: RelativeChord;
 	export let chord: Chord;
 	export let fretted: (number | null)[];
-	export let lowestFret: number = 0;
 
 	const BACKGROUNDS = {
-		[IntervalNumber.FIRST]: '#9b5fe0',
-		[IntervalNumber.SECOND]: '#16a4d8',
-		[IntervalNumber.THIRD]: '#60dbe8',
-		[IntervalNumber.FOURTH]: '#8bd346',
-		[IntervalNumber.FIFTH]: '#efdf48',
-		[IntervalNumber.SIXTH]: '#f9a52c',
-		[IntervalNumber.SEVENTH]: '#d64e12',
-		[IntervalNumber.OCTAVE]: '#9b5fe0'
+		I: '#9b5fe0',
+		II: '#16a4d8',
+		III: '#60dbe8',
+		IV: '#8bd346',
+		V: '#efdf48',
+		VI: '#f9a52c',
+		VII: '#d64e12',
+		VIII: '#9b5fe0'
 	};
 
-	$: backgroundColor = BACKGROUNDS[interval.number];
+	$: backgroundColor = BACKGROUNDS[relativeChord.number];
 </script>
 
-<div class="chord-panel" style="--background-color: {backgroundColor}">
-	<ChordDiagram {fretted} {lowestFret} />
+<div>
+	<div class="chord-panel" style="--background-color: {backgroundColor}">
+		<ChordDiagram {fretted} />
+	</div>
 	<div class="chord-name">{chordToString(chord)}</div>
-	<div class="chord-role">{intervalToString(interval)}</div>
+	<div class="chord-role">{relativeChordToString(relativeChord)}</div>
 </div>
 
 <style>
 	.chord-panel {
-		height: 100%;
-		flex-grow: 1;
 		background-color: var(--background-color);
 		display: flex;
+
 		flex-direction: column;
 		justify-content: center;
 		align-items: center;
+		width: 8em;
+		height: 10em;
+		border-radius: 0.5em;
 	}
 
 	.chord-name {
