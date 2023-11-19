@@ -1,7 +1,6 @@
 export const intervals = ['I', 'II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII'] as const;
 export type Interval = (typeof intervals)[number];
 
-// TODO: there's a "display" version of this which does notes, sharps, flats - one for another day
 export const pitches = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B'] as const;
 export type Pitch = (typeof pitches)[number];
 

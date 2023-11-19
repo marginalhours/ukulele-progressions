@@ -16,10 +16,36 @@
 
 	let sequence: RelativeChord[] = progressions[4];
 
+	const displayPitches = [
+		'C',
+		'D',
+		'E',
+		'F',
+		'G',
+		'A',
+		'B',
+		'C#',
+		'D#',
+		'F#',
+		'G#',
+		'A#',
+		'Db',
+		'Eb',
+		'Gb',
+		'Ab',
+		'Bb'
+	] as const;
+
 	let tonic: Pitch = 'C';
 	let chords: Chord[] = sequence.map((interval) => intervalToChord(tonic, interval));
 	// TODO: store for chords and fretting indices
 	let sequenceFrets: number[][] = chords.map(getFrettingForChord);
+
+	const setTonic = (newTonic: Pitch) => {
+		tonic = newTonic;
+		chords = sequence.map((interval) => intervalToChord(tonic, interval));
+		sequenceFrets = chords.map(getFrettingForChord);
+	};
 
 	const onKeyDown = (e: KeyboardEvent) => {
 		if (e.code == 'Space') {
@@ -36,8 +62,12 @@
 </svelte:head>
 
 <main>
-	<section>
-		{pitches.map((p) => p)}
+	<section class="tonic-section">
+		{#each displayPitches as pitch}
+			<span on:click={() => setTonic(pitch)} class={pitch === tonic ? 'selected-pitch' : ''}
+				>{pitch}</span
+			>
+		{/each}
 	</section>
 	<section class="fretting-section">
 		{#each chords as _, index}
@@ -68,5 +98,16 @@
 		justify-content: center;
 		align-items: center;
 		height: 100%;
+	}
+
+	.tonic-section span {
+		display: inline-block;
+		text-align: center;
+		width: 32px;
+		cursor: pointer;
+	}
+
+	.selected-pitch {
+		border-bottom: 2px solid #f00;
 	}
 </style>
