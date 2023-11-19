@@ -1,7 +1,7 @@
 <script lang="ts">
 	import ChordPanel from './ChordPanel.svelte';
 	import { progression, type RelativeChord } from '../lib/music/relativeChord';
-	import { pitches, type Pitch } from '../lib/music/pitch';
+	import { pitches, type Pitch } from '../lib/music/types';
 	import { intervalToChord, type Chord } from '../lib/music/chords';
 	import { choose } from '../lib/utilities';
 	import { getFrettingForChord } from '$lib/frettings';
@@ -14,10 +14,11 @@
 		progression`I-V-vi-iii-IV-I-IV-V` // hey pachelbel
 	];
 
-	let sequence: RelativeChord[] = progressions[3];
+	let sequence: RelativeChord[] = progressions[4];
 
 	let tonic: Pitch = 'C';
 	let chords: Chord[] = sequence.map((interval) => intervalToChord(tonic, interval));
+	// TODO: store for chords and fretting indices
 	let sequenceFrets: number[][] = chords.map(getFrettingForChord);
 
 	const onKeyDown = (e: KeyboardEvent) => {
@@ -34,20 +35,34 @@
 	<meta name="description" content="Ukulele Chord Progression Generator" />
 </svelte:head>
 
-<section>
-	{#each chords as _, index}
-		<ChordPanel
-			relativeChord={sequence[index]}
-			chord={chords[index]}
-			fretted={sequenceFrets[index]}
-		/>
-	{/each}
-</section>
+<main>
+	<section>
+		{pitches.map((p) => p)}
+	</section>
+	<section class="fretting-section">
+		{#each chords as _, index}
+			<ChordPanel
+				relativeChord={sequence[index]}
+				chord={chords[index]}
+				fretted={sequenceFrets[index]}
+				onPreviousFretting={console.log}
+				onNextFretting={console.log}
+			/>
+		{/each}
+	</section>
+</main>
 
 <svelte:window on:keydown={onKeyDown} />
 
 <style>
-	section {
+	main {
+		display: flex;
+		flex-direction: column;
+		justify-content: center;
+		align-items: center;
+		height: 100%;
+	}
+	.fretting-section {
 		display: flex;
 		flex-direction: row;
 		justify-content: center;

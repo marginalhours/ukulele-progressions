@@ -13,8 +13,10 @@
 		dotColor: string;
 		// Spacing / sizing
 		lineWidth: number;
-		verticalMargin: number;
-		horizontalMargin: number;
+		marginLeft: number;
+		marginRight: number;
+		marginTop: number;
+		marginBottom: number;
 	}
 
 	const defaultDiagramStyle: DiagramStyle = {
@@ -23,8 +25,10 @@
 		dotColor: '#111',
 		lineColor: '#333',
 		lineWidth: 3,
-		verticalMargin: 15,
-		horizontalMargin: 25
+		marginLeft: 28,
+		marginRight: 28,
+		marginTop: 5,
+		marginBottom: 5
 	};
 
 	export let fretted: (number | null)[] = [];
@@ -32,46 +36,46 @@
 
 	// Layout calculations
 
-	const diagramWidth = 120;
+	const diagramWidth = 125;
 	const diagramHeight = 150;
 	const dotRadius = 10;
 	const labelFontSize = 24;
 
 	const diagramStyle = { ...style, ...defaultDiagramStyle };
-	$: lowestFret = Math.max(Math.max(...fretted) - 4, 0);
+	$: lowestFret = Math.min(...fretted) > 2 ? Math.min(...fretted) : 1;
 	$: relativeFrets = fretted.map((fret) => fret - lowestFret);
 
-	const boardWidth = diagramWidth - 2 * diagramStyle.horizontalMargin;
-	const boardHeight = diagramHeight - 2 * diagramStyle.verticalMargin;
+	const boardWidth = diagramWidth - (diagramStyle.marginLeft + diagramStyle.marginRight);
+	const boardHeight = diagramHeight - (diagramStyle.marginTop + diagramStyle.marginBottom);
 
 	const dotFretIncrement = boardHeight / 5;
 
-	const fretLabelXcoord = diagramStyle.horizontalMargin + boardWidth + 0.5 * labelFontSize;
-	const fretLabelYCoord = diagramStyle.verticalMargin + 0.5 * dotFretIncrement;
+	const fretLabelXcoord = diagramWidth - 0.4 * labelFontSize;
+	const fretLabelYCoord = diagramStyle.marginTop + 0.5 * dotFretIncrement;
 
 	let dotYCoords: (number | null)[];
 	$: dotYCoords = relativeFrets.map((fret) => {
-		return diagramStyle.verticalMargin + (fret - 0.5) * dotFretIncrement;
+		return diagramStyle.marginTop + (fret + 0.5) * dotFretIncrement;
 	});
 
 	// middle strings only
 	const stringXcoords = [
-		diagramStyle.horizontalMargin - diagramStyle.lineWidth / 2 + Math.floor((1 / 3) * boardWidth),
-		diagramStyle.horizontalMargin - diagramStyle.lineWidth / 2 + Math.floor((2 / 3) * boardWidth)
+		diagramStyle.marginLeft - diagramStyle.lineWidth / 2 + Math.floor((1 / 3) * boardWidth),
+		diagramStyle.marginLeft - diagramStyle.lineWidth / 2 + Math.floor((2 / 3) * boardWidth)
 	];
 
 	const fretYcoords = [
-		diagramStyle.verticalMargin - diagramStyle.lineWidth / 2 + Math.floor((1 / 5) * boardHeight),
-		diagramStyle.verticalMargin - diagramStyle.lineWidth / 2 + Math.floor((2 / 5) * boardHeight),
-		diagramStyle.verticalMargin - diagramStyle.lineWidth / 2 + Math.floor((3 / 5) * boardHeight),
-		diagramStyle.verticalMargin - diagramStyle.lineWidth / 2 + Math.floor((4 / 5) * boardHeight)
+		diagramStyle.marginTop - diagramStyle.lineWidth / 2 + Math.floor((1 / 5) * boardHeight),
+		diagramStyle.marginTop - diagramStyle.lineWidth / 2 + Math.floor((2 / 5) * boardHeight),
+		diagramStyle.marginTop - diagramStyle.lineWidth / 2 + Math.floor((3 / 5) * boardHeight),
+		diagramStyle.marginTop - diagramStyle.lineWidth / 2 + Math.floor((4 / 5) * boardHeight)
 	];
 
 	const dotXcoords = [
-		diagramStyle.horizontalMargin + Math.floor((0 / 3) * boardWidth),
-		diagramStyle.horizontalMargin + Math.floor((1 / 3) * boardWidth),
-		diagramStyle.horizontalMargin + Math.floor((2 / 3) * boardWidth),
-		diagramStyle.horizontalMargin + Math.floor((3 / 3) * boardWidth)
+		diagramStyle.marginLeft + Math.floor((0 / 3) * boardWidth),
+		diagramStyle.marginLeft + Math.floor((1 / 3) * boardWidth),
+		diagramStyle.marginLeft + Math.floor((2 / 3) * boardWidth),
+		diagramStyle.marginLeft + Math.floor((3 / 3) * boardWidth)
 	];
 </script>
 
@@ -83,8 +87,8 @@
 	<!-- Fretboard top line -->
 	{#if lowestFret == 0}
 		<rect
-			x={diagramStyle.horizontalMargin}
-			y={diagramStyle.verticalMargin - diagramStyle.lineWidth}
+			x={diagramStyle.marginLeft}
+			y={diagramStyle.marginTop - diagramStyle.lineWidth}
 			width={boardWidth}
 			height={diagramStyle.lineWidth * 2}
 			stroke={diagramStyle.lineColor}
@@ -98,8 +102,8 @@
 
 	<!-- Board -->
 	<rect
-		x={diagramStyle.horizontalMargin}
-		y={diagramStyle.verticalMargin}
+		x={diagramStyle.marginLeft}
+		y={diagramStyle.marginTop}
 		width={boardWidth}
 		height={boardHeight}
 		stroke={diagramStyle.lineColor}
@@ -113,14 +117,14 @@
 	<!-- Middle strings -->
 	<rect
 		x={stringXcoords[0]}
-		y={diagramStyle.verticalMargin}
+		y={diagramStyle.marginTop}
 		width={diagramStyle.lineWidth}
 		height={boardHeight}
 		fill={diagramStyle.lineColor}
 	/>
 	<rect
 		x={stringXcoords[1]}
-		y={diagramStyle.verticalMargin}
+		y={diagramStyle.marginTop}
 		width={diagramStyle.lineWidth}
 		height={boardHeight}
 		fill={diagramStyle.lineColor}
@@ -128,28 +132,28 @@
 
 	<!-- Fret lines -->
 	<rect
-		x={diagramStyle.horizontalMargin}
+		x={diagramStyle.marginLeft}
 		y={fretYcoords[0]}
 		width={boardWidth}
 		height={diagramStyle.lineWidth}
 		fill={diagramStyle.lineColor}
 	/>
 	<rect
-		x={diagramStyle.horizontalMargin}
+		x={diagramStyle.marginLeft}
 		y={fretYcoords[1]}
 		width={boardWidth}
 		height={diagramStyle.lineWidth}
 		fill={diagramStyle.lineColor}
 	/>
 	<rect
-		x={diagramStyle.horizontalMargin}
+		x={diagramStyle.marginLeft}
 		y={fretYcoords[2]}
 		width={boardWidth}
 		height={diagramStyle.lineWidth}
 		fill={diagramStyle.lineColor}
 	/>
 	<rect
-		x={diagramStyle.horizontalMargin}
+		x={diagramStyle.marginLeft}
 		y={fretYcoords[3]}
 		width={boardWidth}
 		height={diagramStyle.lineWidth}
@@ -157,7 +161,7 @@
 	/>
 
 	<!-- Fretted strings -->
-	{#if relativeFrets[0] > 0}
+	{#if relativeFrets[0] >= 0}
 		<circle
 			class="chord-diagram-note"
 			transition:fade
@@ -167,7 +171,7 @@
 			r={dotRadius}
 		/>
 	{/if}
-	{#if relativeFrets[1] > 0}
+	{#if relativeFrets[1] >= 0}
 		<circle
 			class="chord-diagram-note"
 			transition:fade
@@ -177,7 +181,7 @@
 			r={dotRadius}
 		/>
 	{/if}
-	{#if relativeFrets[2] > 0}
+	{#if relativeFrets[2] >= 0}
 		<circle
 			class="chord-diagram-note"
 			transition:fade
@@ -187,7 +191,7 @@
 			r={dotRadius}
 		/>
 	{/if}
-	{#if relativeFrets[3] > 0}
+	{#if relativeFrets[3] >= 0}
 		<circle
 			class="chord-diagram-note"
 			transition:fade
@@ -199,7 +203,7 @@
 	{/if}
 
 	<!-- First fret label -->
-	{#if lowestFret > 0}
+	{#if lowestFret > 1}
 		<text
 			x={fretLabelXcoord}
 			y={fretLabelYCoord}
@@ -207,7 +211,7 @@
 			font-size={labelFontSize}
 			dominant-baseline="central"
 			text-anchor="middle"
-			>{lowestFret + 1}
+			>{lowestFret}
 		</text>
 	{/if}
 </svg>

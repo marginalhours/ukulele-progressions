@@ -1,16 +1,23 @@
-export type Interval = 'I' | 'II' | 'III' | 'IV' | 'V' | 'VI' | 'VII' | 'VIII';
+export const intervals = ['I', 'II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII'] as const;
+export type Interval = (typeof intervals)[number];
 
-export type Pitch = 'C' | 'C#' | 'D' | 'D#' | 'E' | 'F' | 'F#' | 'G' | 'G#' | 'A' | 'A#' | 'B';
+// TODO: there's a "display" version of this which does notes, sharps, flats - one for another day
+export const pitches = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B'] as const;
+export type Pitch = (typeof pitches)[number];
 
-export type PitchWithFlats = Pitch | 'Bb' | 'Ab' | 'Gb' | 'Eb' | 'Db';
+export const pitchesWithFlats = [...pitches, 'Bb', 'Ab', 'Gb', 'Eb', 'Db'] as const;
+export type PitchWithFlats = (typeof pitchesWithFlats)[number];
 
-export type Quality =
-	| 'major'
-	| 'minor'
-	| 'dominant-7th'
-	| 'major-7th'
-	| 'minor-7th'
-	| 'suspended-4th'
-	| 'suspended-2nd'
-	| 'augmented'
-	| 'diminished';
+export const qualities = [
+	'major',
+	'minor',
+	'dominant-7th',
+	'major-7th',
+	'minor-7th',
+	'suspended-4th',
+	'suspended-2nd',
+	'augmented',
+	'diminished'
+];
+
+export type Quality = (typeof qualities)[number];

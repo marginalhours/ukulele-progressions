@@ -2,9 +2,7 @@
  * This file contains types and helpers for working with pitches
  */
 
-import type { Pitch } from './types';
-
-export const pitches: Pitch[] = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B'];
+import { pitches, type Pitch } from './types';
 
 const pitchToIndex: { [key in Pitch]: number } = {
 	C: 0,
