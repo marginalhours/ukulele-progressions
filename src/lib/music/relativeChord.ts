@@ -36,9 +36,23 @@ export const relativeChordToString = (interval: RelativeChord): string => {
 		case 'minor':
 			return number.toLowerCase();
 		case 'suspended-4th':
-			return `${interval}sus4`;
+			return `${number}sus4`;
 		case 'suspended-2nd':
-			return `${interval}sus2`;
+			return `${number}sus2`;
+		case 'dominant-7th':
+			return `${number}7`;
+		case 'major-7th':
+			return `${number}maj7`;
+		case 'minor-7th':
+			return `${number}min7`;
+		case '5':
+			return `${number}5`;
+		case '6':
+			return `${number}6`;
+		case 'augmented':
+			return `${number}aug`;
+		case 'diminished':
+			return `${number}dim`;
 		default:
 			return number;
 	}
@@ -61,21 +75,44 @@ export const relativeChordToString = (interval: RelativeChord): string => {
 export const parseRelativeChord = (intervalString: string): RelativeChord | null => {
 	// This regex needs a leading b for flats (boo) and possibly for 7ths and 6ths or slash chords
 	// lads by the time we're talking bV7 are we really talking 'intervals' at all any more; is that not just a chord
-	const matches = intervalString.match(/(^[VI]+|^[vi]+)(aug|dim){0,1}/);
+	const matches = intervalString.match(/(^[VI]+|^[vi]+)(aug|dim|maj7|5|6|7|sus2|sus4){0,1}/);
 
 	if (matches === null) {
 		return null;
 	}
 
-	const number = matches[1].toUpperCase() as Interval;
-
 	let quality: Quality = isLowerCase(matches[1]) ? 'minor' : 'major';
 
-	if (matches[2] === 'aug') {
-		quality = 'augmented';
-	} else if (matches[2] === 'dim') {
-		quality = 'diminished';
+	const [_, __, rawQuality] = matches;
+
+	switch (rawQuality) {
+		case 'aug':
+			quality = 'augmented';
+			break;
+		case 'dim':
+			quality = 'diminished';
+			break;
+		case 'maj7':
+			quality = 'major-7th';
+			break;
+		case '7':
+			quality = quality === 'major' ? 'dominant-7th' : 'minor-7th';
+			break;
+		case '6':
+			quality = '6';
+			break;
+		case '5':
+			quality = '5';
+			break;
+		case 'sus4':
+			quality = 'suspended-4th';
+			break;
+		case 'sus2':
+			quality = 'suspended-2nd';
+			break;
 	}
+
+	const number = matches[1].toUpperCase() as Interval;
 
 	return { number, quality };
 };

@@ -1,57 +1,20 @@
 <script lang="ts">
 	import ChordPanel from './ChordPanel.svelte';
-	import { progression, type RelativeChord } from '../lib/music/relativeChord';
-	import { pitches, type Pitch } from '../lib/music/types';
-	import { intervalToChord, type Chord } from '../lib/music/chords';
-	import { choose } from '../lib/utilities';
-	import { getFrettingForChord } from '$lib/frettings';
-
-	const progressions = [
-		progression`I-IV-V`, // the theoretical minimum
-		progression`ii-V-I`, // jazzy (?)
-		progression`vi-IV-I-V`, // 4 chords
-		progression`I-vi-IV-V`, // 1950s do-wop
-		progression`I-V-vi-iii-IV-I-IV-V` // hey pachelbel
-	];
-
-	let sequence: RelativeChord[] = progressions[4];
-
-	const displayPitches = [
-		'C',
-		'D',
-		'E',
-		'F',
-		'G',
-		'A',
-		'B',
-		'C#',
-		'D#',
-		'F#',
-		'G#',
-		'A#',
-		'Db',
-		'Eb',
-		'Gb',
-		'Ab',
-		'Bb'
-	] as const;
-
-	let tonic: Pitch = 'C';
-	let chords: Chord[] = sequence.map((interval) => intervalToChord(tonic, interval));
-	// TODO: store for chords and fretting indices
-	let sequenceFrets: number[][] = chords.map(getFrettingForChord);
-
-	const setTonic = (newTonic: Pitch) => {
-		tonic = newTonic;
-		chords = sequence.map((interval) => intervalToChord(tonic, interval));
-		sequenceFrets = chords.map(getFrettingForChord);
-	};
+	import { displayPitches } from '../lib/music/types';
+	import {
+		tonic,
+		progression,
+		chords,
+		frettings,
+		randomizeTonic,
+		setTonic,
+		previousFretting,
+		nextFretting
+	} from './progressionStore';
 
 	const onKeyDown = (e: KeyboardEvent) => {
 		if (e.code == 'Space') {
-			tonic = choose(pitches);
-			chords = sequence.map((interval) => intervalToChord(tonic, interval));
-			sequenceFrets = chords.map(getFrettingForChord);
+			randomizeTonic();
 		}
 	};
 </script>
@@ -62,22 +25,23 @@
 </svelte:head>
 
 <main>
-	<section class="tonic-section">
-		{#each displayPitches as pitch}
-			<span on:click={() => setTonic(pitch)} class={pitch === tonic ? 'selected-pitch' : ''}
-				>{pitch}</span
-			>
+	<section class="fretting-section">
+		{#each $chords as _, index}
+			<ChordPanel
+				chord={$chords[index]}
+				relativeChord={$progression[index]}
+				fretted={$frettings[index]}
+				onPreviousFretting={() => previousFretting($chords[index], index)}
+				onNextFretting={() => nextFretting($chords[index], index)}
+			/>
 		{/each}
 	</section>
-	<section class="fretting-section">
-		{#each chords as _, index}
-			<ChordPanel
-				relativeChord={sequence[index]}
-				chord={chords[index]}
-				fretted={sequenceFrets[index]}
-				onPreviousFretting={console.log}
-				onNextFretting={console.log}
-			/>
+	<section class="progression-section" />
+	<section class="tonic-section">
+		{#each displayPitches as pitch}
+			<span on:click={() => setTonic(pitch)} class={pitch === $tonic ? 'selected-pitch' : ''}
+				>{pitch}</span
+			>
 		{/each}
 	</section>
 </main>
@@ -97,7 +61,13 @@
 		flex-direction: row;
 		justify-content: center;
 		align-items: center;
-		height: 100%;
+	}
+
+	.progression-section {
+	}
+
+	.tonic-section {
+		margin-top: 5em;
 	}
 
 	.tonic-section span {

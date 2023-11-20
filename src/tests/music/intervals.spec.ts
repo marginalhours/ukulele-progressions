@@ -37,6 +37,48 @@ describe('parseInterval', () => {
 			quality: 'diminished'
 		});
 	});
+	it('should parse a 7th', () => {
+		expect(parseRelativeChord('IV7')).toEqual({
+			number: 'IV',
+			quality: 'dominant-7th'
+		});
+	});
+	it('should parse a major 7th', () => {
+		expect(parseRelativeChord('IVmaj7')).toEqual({
+			number: 'IV',
+			quality: 'major-7th'
+		});
+	});
+	it('should parse a minor 7th', () => {
+		expect(parseRelativeChord('iv7')).toEqual({
+			number: 'IV',
+			quality: 'minor-7th'
+		});
+	});
+	it('should parse a 6', () => {
+		expect(parseRelativeChord('iv6')).toEqual({
+			number: 'IV',
+			quality: '6'
+		});
+	});
+	it('should parse a 5', () => {
+		expect(parseRelativeChord('iv5')).toEqual({
+			number: 'IV',
+			quality: '5'
+		});
+	});
+	it('should parse a sus4', () => {
+		expect(parseRelativeChord('Isus4')).toEqual({
+			number: 'I',
+			quality: 'suspended-4th'
+		});
+	});
+	it('should parse a sus2', () => {
+		expect(parseRelativeChord('VIsus2')).toEqual({
+			number: 'VI',
+			quality: 'suspended-2nd'
+		});
+	});
 });
 
 describe('progression', () => {

@@ -42,7 +42,7 @@
 	const labelFontSize = 24;
 
 	const diagramStyle = { ...style, ...defaultDiagramStyle };
-	$: lowestFret = Math.min(...fretted) > 2 ? Math.min(...fretted) : 1;
+	$: lowestFret = Math.max(...fretted) > 4 ? Math.max(...fretted) - 3 : 1;
 	$: relativeFrets = fretted.map((fret) => fret - lowestFret);
 
 	const boardWidth = diagramWidth - (diagramStyle.marginLeft + diagramStyle.marginRight);

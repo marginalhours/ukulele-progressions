@@ -7,12 +7,33 @@ export type Pitch = (typeof pitches)[number];
 export const pitchesWithFlats = [...pitches, 'Bb', 'Ab', 'Gb', 'Eb', 'Db'] as const;
 export type PitchWithFlats = (typeof pitchesWithFlats)[number];
 
+export const displayPitches = [
+	'C',
+	'D',
+	'E',
+	'F',
+	'G',
+	'A',
+	'B',
+	'C#',
+	'D#',
+	'F#',
+	'G#',
+	'A#',
+	'Db',
+	'Eb',
+	'Gb',
+	'Ab',
+	'Bb'
+] as const;
+
 export const qualities = [
 	'major',
 	'minor',
 	'dominant-7th',
 	'major-7th',
 	'minor-7th',
+	'6',
 	'suspended-4th',
 	'suspended-2nd',
 	'augmented',
