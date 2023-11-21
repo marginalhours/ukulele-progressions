@@ -4,17 +4,17 @@
 
 import { type RelativeChord, relativeChordInSemitones } from './relativeChord';
 import { transposePitch } from './pitch';
-import type { Pitch, Quality } from './types';
-
-export const intervalToChord = (tonic: Pitch, interval: RelativeChord): Chord => {
-	const chordPitch = transposePitch(tonic, relativeChordInSemitones(interval));
-
-	return { tonic: chordPitch, quality: interval.quality };
-};
+import { unflatten, type Pitch, type PitchWithFlats, type Quality } from './types';
 
 export type Chord = {
 	tonic: Pitch;
 	quality: Quality;
+};
+
+export const intervalToChord = (tonic: PitchWithFlats, interval: RelativeChord): Chord => {
+	const chordPitch = transposePitch(unflatten(tonic), relativeChordInSemitones(interval));
+
+	return { tonic: chordPitch, quality: interval.quality };
 };
 
 export const chordToString = ({ tonic, quality }: Chord): string => {

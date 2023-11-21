@@ -1,7 +1,7 @@
 import { writable, derived } from 'svelte/store';
 import { chooseWithout } from '../lib/utilities';
 import { progression as $, type RelativeChord } from '../lib/music/relativeChord';
-import { pitches, type Pitch } from '../lib/music/types';
+import { pitches, type Pitch, type PitchWithFlats } from '../lib/music/types';
 import { intervalToChord } from '../lib/music/chords';
 import { getFrettingForChord, getFrettingsForChord } from '../lib/frettings';
 
@@ -14,16 +14,23 @@ const progressions = [
 	$`I-IIIdim-IV-V7`,
 	$`III7-vi-iv-I`,
 	$`I-III-IV-iv`, // creep
-	$`I-VI7-II7-II-I`, // circus cadence
+	$`I-VI7-II7-V-I`, // circus cadence
 	$`IV-ii-v-I`, // more minor,
 	$`v-ii-IV-I`, // ditto but moved around,
-	$`I-I5-I-V-II6` // II6 is wrong, it's F#major in G (frex)
+	$`I-I5-I-V-II6`, // II6 is wrong, it's F#major in G (frex)
+	$`i7-IV-VII-v`
 ];
 
 // G-G5-D-Adim7(no3)-Adim7-Em-A-D-D75 This sounds good
 
-const tonic = writable<Pitch>('C');
-const progression = writable<RelativeChord[]>(progressions[11]);
+const tonic = writable<PitchWithFlats>('C');
+const progressionIndex = writable<number>(0);
+
+const progression = derived(
+	[progressionIndex],
+	([$progressionIndex]) => progressions[$progressionIndex]
+);
+
 const frettingOffsets = writable<number[]>(progressions[0].map((_) => 0));
 
 const chords = derived(
@@ -40,8 +47,8 @@ const frettings = derived([chords, frettingOffsets], ([$chords, $frettingOffsets
 
 const resetFretIndices = () => {
 	// Hacky fret index reset
-	progression.update((current) => {
-		frettingOffsets.update((_) => current.map((_) => 0));
+	progressionIndex.update((current) => {
+		frettingOffsets.update((_) => progressions[current].map((_) => 0));
 		return current;
 	});
 };
@@ -75,6 +82,14 @@ const nextFretting = (chord: Chord, chordIndex: number) => {
 	});
 };
 
+const previousProgression = () => {
+	progressionIndex.update((current) => (progressions.length + current - 1) % progressions.length);
+};
+
+const nextProgression = () => {
+	progressionIndex.update((current) => (progressions.length + current + 1) % progressions.length);
+};
+
 export {
 	tonic,
 	progression,
@@ -83,5 +98,7 @@ export {
 	setTonic,
 	randomizeTonic,
 	previousFretting,
-	nextFretting
+	nextFretting,
+	previousProgression,
+	nextProgression
 };

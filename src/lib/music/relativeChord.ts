@@ -16,7 +16,9 @@ const intervalNumberToSemitones: { [key in Interval]: number } = {
 	III: 4,
 	IV: 5,
 	V: 7,
+	bVI: 8,
 	VI: 9,
+	bVII: 10,
 	VII: 11,
 	VIII: 12
 };
@@ -73,9 +75,9 @@ export const relativeChordToString = (interval: RelativeChord): string => {
  * Turn a guitar-style interval (vii, Vdim etc) into an Interval object
  */
 export const parseRelativeChord = (intervalString: string): RelativeChord | null => {
-	// This regex needs a leading b for flats (boo) and possibly for 7ths and 6ths or slash chords
-	// lads by the time we're talking bV7 are we really talking 'intervals' at all any more; is that not just a chord
-	const matches = intervalString.match(/(^[VI]+|^[vi]+)(aug|dim|maj7|5|6|7|sus2|sus4){0,1}/);
+	const matches = intervalString.match(
+		/^(b?[VI]+|[vi]+)(maj7|aug7|dim7|aug|dim|5|6|7|sus2|sus4){0,1}/
+	);
 
 	if (matches === null) {
 		return null;
@@ -86,29 +88,35 @@ export const parseRelativeChord = (intervalString: string): RelativeChord | null
 	const [_, __, rawQuality] = matches;
 
 	switch (rawQuality) {
+		case 'maj7':
+			quality = 'major-7th';
+			break;
+		case 'aug7':
+			quality = 'augmented-7th';
+			break;
+		case 'dim7':
+			quality = 'diminished-7th';
+			break;
 		case 'aug':
 			quality = 'augmented';
 			break;
 		case 'dim':
 			quality = 'diminished';
 			break;
-		case 'maj7':
-			quality = 'major-7th';
-			break;
-		case '7':
-			quality = quality === 'major' ? 'dominant-7th' : 'minor-7th';
+		case '5':
+			quality = '5';
 			break;
 		case '6':
 			quality = '6';
 			break;
-		case '5':
-			quality = '5';
-			break;
-		case 'sus4':
-			quality = 'suspended-4th';
+		case '7':
+			quality = quality === 'major' ? 'dominant-7th' : 'minor-7th';
 			break;
 		case 'sus2':
 			quality = 'suspended-2nd';
+			break;
+		case 'sus4':
+			quality = 'suspended-4th';
 			break;
 	}
 
@@ -118,7 +126,7 @@ export const parseRelativeChord = (intervalString: string): RelativeChord | null
 };
 
 /*
- * Fancy tagged template literal for writing progressions like progression`I iii IV V`
+ * Fancy tagged template literal for writing progressions like $`I iii IV V`
  */
 export const progression = (strings: TemplateStringsArray, ...values: any): RelativeChord[] => {
 	return strings[0].split(/[\s-]/).map(parseRelativeChord) as RelativeChord[];

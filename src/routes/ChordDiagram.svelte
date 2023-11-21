@@ -26,7 +26,7 @@
 		lineColor: '#333',
 		lineWidth: 3,
 		marginLeft: 28,
-		marginRight: 28,
+		marginRight: 42,
 		marginTop: 5,
 		marginBottom: 5
 	};
@@ -34,15 +34,31 @@
 	export let fretted: (number | null)[] = [];
 	export let style: DiagramStyle = defaultDiagramStyle;
 
+	const findLowestFret = (fretted: number[]) => {
+		const maxFret = Math.max(...fretted);
+		let lowestFret = maxFret > 4 ? maxFret - 3 : 1;
+
+		while (fretted.every((fret) => fret === 0 || fret > lowestFret)) {
+			lowestFret += 1;
+		}
+
+		// This is (usually) safe and looks way better
+		if (lowestFret === 2) {
+			lowestFret = 1;
+		}
+
+		return lowestFret;
+	};
+
 	// Layout calculations
 
-	const diagramWidth = 125;
+	const diagramWidth = 140;
 	const diagramHeight = 150;
 	const dotRadius = 10;
 	const labelFontSize = 24;
 
 	const diagramStyle = { ...style, ...defaultDiagramStyle };
-	$: lowestFret = Math.max(...fretted) > 4 ? Math.max(...fretted) - 3 : 1;
+	$: lowestFret = findLowestFret(fretted);
 	$: relativeFrets = fretted.map((fret) => fret - lowestFret);
 
 	const boardWidth = diagramWidth - (diagramStyle.marginLeft + diagramStyle.marginRight);
@@ -50,7 +66,7 @@
 
 	const dotFretIncrement = boardHeight / 5;
 
-	const fretLabelXcoord = diagramWidth - 0.4 * labelFontSize;
+	const fretLabelXcoord = diagramWidth - 1.2 * labelFontSize;
 	const fretLabelYCoord = diagramStyle.marginTop + 0.5 * dotFretIncrement;
 
 	let dotYCoords: (number | null)[];
@@ -210,7 +226,7 @@
 			class="chord-diagram-fret-label"
 			font-size={labelFontSize}
 			dominant-baseline="central"
-			text-anchor="middle"
+			text-anchor="start"
 			>{lowestFret}
 		</text>
 	{/if}
@@ -219,6 +235,7 @@
 <style>
 	.chord-diagram {
 		filter: drop-shadow(3px 5px 2px rgb(0 0 0 / 0.4));
+		user-select: none;
 	}
 
 	.chord-diagram-note {

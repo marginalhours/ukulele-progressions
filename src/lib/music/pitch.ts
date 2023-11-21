@@ -23,7 +23,3 @@ export const transposePitch = (pitch: Pitch, semitones: number): Pitch => {
 	const pitchIndex = pitchToIndex[pitch];
 	return pitches[(pitchIndex + semitones) % pitches.length];
 };
-
-export const getStringPitches = (string: Pitch, frets: number) => {
-	return Array.from(Array(frets).keys()).map((semitones) => transposePitch(string, semitones));
-};

@@ -1,5 +1,5 @@
 import type { Chord } from './music/chords';
-import type { Pitch, Quality } from './music/types';
+import { unflatten, type Pitch, type PitchWithFlats, type Quality } from './music/types';
 
 /**
  * Generating these was cool but also a massive nerd snipe.
@@ -9,11 +9,11 @@ import type { Pitch, Quality } from './music/types';
  */
 
 export const getFrettingForChord = ({ tonic, quality }: Chord, index: number = 0): number[] => {
-	return frettings[tonic][quality][index];
+	return frettings[unflatten(tonic)][quality][index];
 };
 
 export const getFrettingsForChord = ({ tonic, quality }: Chord): number[][] => {
-	return frettings[tonic][quality];
+	return frettings[unflatten(tonic)][quality];
 };
 
 const frettings: Record<Pitch, Record<Quality, number[][]>> = {

@@ -3,7 +3,9 @@
 	import { relativeChordToString, type RelativeChord } from '../lib/music/relativeChord';
 	import { chordToString, type Chord } from '../lib/music/chords';
 	import Chevron from './Chevron.svelte';
+	import type { PitchWithFlats } from '../lib/music/types';
 
+	export let tonic: PitchWithFlats;
 	export let relativeChord: RelativeChord;
 	export let chord: Chord;
 	export let fretted: (number | null)[];
@@ -48,6 +50,7 @@
 <style>
 	.chord-panel-wrapper {
 		position: relative;
+		user-select: none;
 	}
 
 	.chord-topper {
@@ -80,11 +83,12 @@
 		justify-content: center;
 		align-items: center;
 		cursor: pointer;
-		transition: transform 100ms ease-in-out;
+		opacity: 0.7;
+		transition: opacity 100ms ease-in-out;
 	}
 
 	.fretting-control:hover {
-		transform: scale(1.1);
+		opacity: 1;
 	}
 
 	.fretting-control-up {

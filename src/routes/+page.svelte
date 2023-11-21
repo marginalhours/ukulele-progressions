@@ -9,8 +9,12 @@
 		randomizeTonic,
 		setTonic,
 		previousFretting,
-		nextFretting
+		nextFretting,
+		previousProgression,
+		nextProgression
 	} from './progressionStore';
+	import { relativeChordToString } from '$lib/music/relativeChord';
+	import Chevron from './Chevron.svelte';
 
 	const onKeyDown = (e: KeyboardEvent) => {
 		if (e.code == 'Space') {
@@ -28,6 +32,7 @@
 	<section class="fretting-section">
 		{#each $chords as _, index}
 			<ChordPanel
+				{tonic}
 				chord={$chords[index]}
 				relativeChord={$progression[index]}
 				fretted={$frettings[index]}
@@ -36,13 +41,28 @@
 			/>
 		{/each}
 	</section>
-	<section class="progression-section" />
+	<section class="progression-section">
+		<h2 class="progression-title">Progression</h2>
+		<div class="progression-section-chords">
+			<div on:click={previousProgression} class="progression-control progression-control-previous">
+				<Chevron />
+			</div>
+			{$progression.map((p) => relativeChordToString(p)).join(' - ')}
+			<div on:click={nextProgression} class="progression-control progression-control-next">
+				<Chevron />
+			</div>
+		</div>
+	</section>
 	<section class="tonic-section">
-		{#each displayPitches as pitch}
-			<span on:click={() => setTonic(pitch)} class={pitch === $tonic ? 'selected-pitch' : ''}
-				>{pitch}</span
-			>
-		{/each}
+		<h2 class="tonic-title">Key</h2>
+		<div class="tonic-section-tonics">
+			{#each displayPitches as pitch}
+				<span
+					on:click={() => setTonic(pitch)}
+					class={pitch === $tonic ? 'selected-tonic tonic-button' : 'tonic-button'}>{pitch}</span
+				>
+			{/each}
+		</div>
 	</section>
 </main>
 
@@ -64,20 +84,89 @@
 	}
 
 	.progression-section {
+		margin-top: 5em;
+		display: flex;
+		justify-content: center;
+		flex-direction: column;
+	}
+
+	.progression-title {
+		font-weight: bold;
+		text-transform: lowercase;
+		margin: 0 auto;
+		margin-bottom: 1em;
+	}
+
+	.progression-control {
+		cursor: pointer;
+		margin: 0 1em;
+		opacity: 0.7;
+		transition: opacity 100ms ease-in-out;
+	}
+
+	.progression-control:hover {
+		cursor: pointer;
+		opacity: 1;
+	}
+
+	.progression-control-previous {
+		transform: scaleX(-1);
+	}
+
+	.progression-section-chords {
+		display: flex;
 	}
 
 	.tonic-section {
-		margin-top: 5em;
+		margin-top: 2em;
+		display: flex;
+		justify-content: center;
+		flex-direction: column;
+		user-select: none;
 	}
 
-	.tonic-section span {
+	.tonic-title {
+		font-weight: bold;
+		text-transform: lowercase;
+		margin: 0 auto;
+		margin-bottom: 1em;
+	}
+
+	.tonic-button {
 		display: inline-block;
 		text-align: center;
 		width: 32px;
 		cursor: pointer;
+		font-weight: bold;
+		border-top: 1px solid #aaa;
+		border-bottom: 1px solid #aaa;
+		padding: 0.5em 0.5em;
+		border-collapse: collapse;
+		border-right: 1px solid #aaa;
 	}
 
-	.selected-pitch {
-		border-bottom: 2px solid #f00;
+	.tonic-button:first-child {
+		border-top: 1px solid #aaa;
+		border-bottom: 1px solid #aaa;
+		border-left: 1px solid #aaa;
+		border-top-left-radius: 5px;
+		border-bottom-left-radius: 5px;
+	}
+
+	.tonic-button:last-child {
+		border-top: 1px solid #aaa;
+		border-bottom: 1px solid #aaa;
+		border-right: 1px solid #aaa;
+		border-top-right-radius: 5px;
+		border-bottom-right-radius: 5px;
+	}
+
+	.tonic-button:hover {
+		background-color: #ccc;
+	}
+
+	.selected-tonic,
+	.selected-tonic:hover {
+		background-color: #aaa;
 	}
 </style>
