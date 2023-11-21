@@ -19,6 +19,7 @@
 	const onKeyDown = (e: KeyboardEvent) => {
 		if (e.code == 'Space') {
 			randomizeTonic();
+			e.preventDefault();
 		}
 	};
 </script>
@@ -81,10 +82,11 @@
 		flex-direction: row;
 		justify-content: center;
 		align-items: center;
+		flex-wrap: wrap;
 	}
 
 	.progression-section {
-		margin-top: 5em;
+		margin-top: 5vh;
 		display: flex;
 		justify-content: center;
 		flex-direction: column;
@@ -143,6 +145,12 @@
 		padding: 0.5em 0.5em;
 		border-collapse: collapse;
 		border-right: 1px solid #aaa;
+	}
+
+	.tonic-section-tonics {
+		display: flex;
+		width: 100%;
+		flex-wrap: wrap;
 	}
 
 	.tonic-button:first-child {

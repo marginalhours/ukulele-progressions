@@ -107,8 +107,10 @@
 	}
 
 	.chord-panel {
-		width: 8em;
-		height: 10em;
+		width: 24vw;
+		height: 30vw;
+		max-width: 160px;
+		max-height: 200px;
 		border-radius: 0.5em;
 		z-index: -1;
 	}
