@@ -4,10 +4,22 @@
 
 import { type RelativeChord, relativeChordInSemitones } from './relativeChord';
 import { transposePitch } from './pitch';
-import { unflatten, type Pitch, type PitchWithFlats, type Quality } from './types';
+import {
+	unflatten,
+	type Pitch,
+	type PitchWithFlats,
+	type Quality,
+	unsharpen,
+	isFlat
+} from './types';
 
 export type Chord = {
 	tonic: Pitch;
+	quality: Quality;
+};
+
+export type ChordWithFlat = {
+	tonic: PitchWithFlats;
 	quality: Quality;
 };
 
@@ -17,7 +29,7 @@ export const intervalToChord = (tonic: PitchWithFlats, interval: RelativeChord):
 	return { tonic: chordPitch, quality: interval.quality };
 };
 
-export const chordToString = ({ tonic, quality }: Chord): string => {
+export const chordToString = ({ tonic, quality }: ChordWithFlat): string => {
 	switch (quality) {
 		case 'major':
 			return tonic;
@@ -44,6 +56,20 @@ export const chordToString = ({ tonic, quality }: Chord): string => {
 		default:
 			return tonic;
 	}
+};
+
+export const flatAwareChordToString = (
+	chord: Chord,
+	relativeChord: RelativeChord,
+	tonic: Pitch
+) => {
+	let newTonic = chord.tonic as PitchWithFlats;
+
+	if (isFlat(tonic) || relativeChord.number[0] === 'b') {
+		newTonic = unsharpen(chord.tonic);
+	}
+
+	return chordToString({ tonic: newTonic, quality: chord.quality });
 };
 
 // ⁷

@@ -38,8 +38,12 @@
 		const maxFret = Math.max(...fretted);
 		let lowestFret = maxFret > 4 ? maxFret - 3 : 1;
 
-		while (fretted.every((fret) => fret === 0 || fret > lowestFret)) {
-			lowestFret += 1;
+		for (let i = 0; i < 25; i++) {
+			if (fretted.every((fret) => fret === 0 || fret > lowestFret)) {
+				lowestFret += 1;
+			} else {
+				break;
+			}
 		}
 
 		// This is (usually) safe and looks way better
@@ -234,7 +238,7 @@
 
 <style>
 	.chord-diagram {
-		filter: drop-shadow(3px 5px 2px rgb(0 0 0 / 0.4));
+		filter: drop-shadow(1px 2px 1px rgb(0 0 0 / 0.4));
 		user-select: none;
 	}
 

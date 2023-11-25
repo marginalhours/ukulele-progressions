@@ -1,25 +1,38 @@
 <script lang="ts">
 	import ChordDiagram from './ChordDiagram.svelte';
 	import { relativeChordToString, type RelativeChord } from '../lib/music/relativeChord';
-	import { chordToString, type Chord } from '../lib/music/chords';
+	import { type Chord, flatAwareChordToString } from '../lib/music/chords';
 	import Chevron from './Chevron.svelte';
 	import type { PitchWithFlats } from '../lib/music/types';
+	import { getFrettingsForChord } from '$lib/frettings';
 
 	export let tonic: PitchWithFlats;
 	export let relativeChord: RelativeChord;
 	export let chord: Chord;
-	export let fretted: (number | null)[];
-	export let onPreviousFretting: () => void;
-	export let onNextFretting: () => void;
+
+	const resetOffset = (_: Chord) => 0;
+
+	$: availableFrettings = getFrettingsForChord(chord);
+	$: frettingOffset = resetOffset(chord);
+
+	const onPreviousFretting = () => {
+		frettingOffset = (availableFrettings.length + frettingOffset - 1) % availableFrettings.length;
+	};
+	const onNextFretting = () => {
+		frettingOffset = (availableFrettings.length + frettingOffset + 1) % availableFrettings.length;
+	};
 
 	const BACKGROUNDS = {
 		I: '#9b5fe0',
 		II: '#16a4d8',
 		III: '#60dbe8',
+		bIII: '#60dbe8',
 		IV: '#8bd346',
 		V: '#efdf48',
 		VI: '#f9a52c',
+		bVI: '#f9a52c',
 		VII: '#d64e12',
+		bVII: '#d64e12',
 		VIII: '#9b5fe0'
 	};
 
@@ -29,19 +42,24 @@
 <div class="chord-panel-wrapper">
 	<div class="chord-and-fretting">
 		<div class="fretting-controls">
-			<div class="fretting-control" on:click={onPreviousFretting}>
+			<button class="fretting-control" on:click={onPreviousFretting} title="Previous fretting">
 				<Chevron class="fretting-control-up" />
+			</button>
+			<div class={`fretting-control-counter ${frettingOffset > 0 ? 'visible' : ''}`}>
+				<span>{frettingOffset + 1}</span>
+				<hr />
+				<span>{availableFrettings.length}</span>
 			</div>
-			<div class="fretting-control" on:click={onNextFretting}>
+			<button class="fretting-control" on:click={onNextFretting} title="Next fretting">
 				<Chevron class="fretting-control-down" />
-			</div>
+			</button>
 		</div>
 		<div class="chord-panel">
-			<ChordDiagram {fretted} />
+			<ChordDiagram fretted={availableFrettings[frettingOffset]} />
 		</div>
 	</div>
 	<div class="chord-topper" style="--background-color: {backgroundColor}" />
-	<div class="chord-name">{chordToString(chord)}</div>
+	<div class="chord-name">{flatAwareChordToString(chord, relativeChord, tonic)}</div>
 	<div class="chord-role">
 		{relativeChordToString(relativeChord)}
 	</div>
@@ -57,6 +75,7 @@
 		width: 90%;
 		height: 5px;
 		opacity: 0.5;
+		border-radius: 0.5em;
 		background-color: var(--background-color);
 	}
 
@@ -68,7 +87,7 @@
 	.fretting-controls {
 		display: flex;
 		flex-direction: column;
-		justify-content: space-around;
+		justify-content: space-evenly;
 		align-items: center;
 		position: relative;
 		left: 8px;
@@ -85,6 +104,8 @@
 		cursor: pointer;
 		opacity: 0.7;
 		transition: opacity 100ms ease-in-out;
+		background: none;
+		border: none;
 	}
 
 	.fretting-control:hover {
@@ -97,6 +118,30 @@
 
 	.fretting-control-down {
 		transform: rotate(90deg);
+	}
+
+	.fretting-control-counter {
+		display: flex;
+		flex-direction: column;
+		text-align: center;
+		align-items: center;
+		justify-content: center;
+		opacity: 0;
+		transition: opacity 100ms ease-in-out;
+		font: sans-serif;
+		font-style: italic;
+	}
+
+	.fretting-control-counter.visible {
+		opacity: 1;
+	}
+
+	.fretting-control-counter hr {
+		width: 90%;
+		margin: 0.5em auto;
+		border: none;
+		height: 1px;
+		background-color: #aaa;
 	}
 
 	.chord-panel-wrapper {
@@ -122,8 +167,8 @@
 	}
 
 	.chord-role {
-		font-size: 1em;
+		font-size: 0.8em;
 		font-weight: bold;
-		opacity: 0.8;
+		opacity: 0.5;
 	}
 </style>

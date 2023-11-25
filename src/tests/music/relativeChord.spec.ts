@@ -37,7 +37,7 @@ describe('parseInterval', () => {
 			quality: 'diminished'
 		});
 	});
-	it('should parse a 7th', () => {
+	it('should parse a dominant 7th', () => {
 		expect(parseRelativeChord('IV7')).toEqual({
 			number: 'IV',
 			quality: 'dominant-7th'
@@ -77,6 +77,54 @@ describe('parseInterval', () => {
 		expect(parseRelativeChord('VIsus2')).toEqual({
 			number: 'VI',
 			quality: 'suspended-2nd'
+		});
+	});
+	it('should parse an augmented', () => {
+		expect(parseRelativeChord('IIIaug')).toEqual({
+			number: 'III',
+			quality: 'augmented'
+		});
+	});
+	it('should parse a diminished', () => {
+		expect(parseRelativeChord('IIIdim')).toEqual({
+			number: 'III',
+			quality: 'diminished'
+		});
+	});
+	it('should parse an augmented 7th', () => {
+		expect(parseRelativeChord('Vaug7')).toEqual({
+			number: 'V',
+			quality: 'augmented-7th'
+		});
+	});
+	it('should parse a diminished 7th', () => {
+		expect(parseRelativeChord('Vdim7')).toEqual({
+			number: 'V',
+			quality: 'diminished-7th'
+		});
+	});
+	it('should parse a flat 3rd', () => {
+		expect(parseRelativeChord('bIII')).toEqual({
+			number: 'bIII',
+			quality: 'major'
+		});
+	});
+	it('should parse a flat 3rd', () => {
+		expect(parseRelativeChord('bIII')).toEqual({
+			number: 'bIII',
+			quality: 'major'
+		});
+	});
+	it('should parse a flat 6th', () => {
+		expect(parseRelativeChord('bVI')).toEqual({
+			number: 'bVI',
+			quality: 'major'
+		});
+	});
+	it('should parse a flat 7th', () => {
+		expect(parseRelativeChord('bVII')).toEqual({
+			number: 'bVII',
+			quality: 'major'
 		});
 	});
 });

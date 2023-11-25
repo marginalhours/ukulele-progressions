@@ -13,6 +13,7 @@ export type RelativeChord = {
 const intervalNumberToSemitones: { [key in Interval]: number } = {
 	I: 0,
 	II: 2,
+	bIII: 3,
 	III: 4,
 	IV: 5,
 	V: 7,
@@ -55,6 +56,10 @@ export const relativeChordToString = (interval: RelativeChord): string => {
 			return `${number}aug`;
 		case 'diminished':
 			return `${number}dim`;
+		case 'augmented-7th':
+			return `${number}aug7`;
+		case 'diminished-7th':
+			return `${number}dim7`;
 		default:
 			return number;
 	}
@@ -120,9 +125,12 @@ export const parseRelativeChord = (intervalString: string): RelativeChord | null
 			break;
 	}
 
-	const number = matches[1].toUpperCase() as Interval;
+	let number = matches[1].toUpperCase();
+	if (number[0] === 'B') {
+		number = `b${number.substring(1)}`;
+	}
 
-	return { number, quality };
+	return { number: number as Interval, quality };
 };
 
 /*

@@ -14,7 +14,6 @@
 <style>
 	.app {
 		min-height: 100vh;
-		padding-top: 10vh;
 	}
 
 	footer {
