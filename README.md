@@ -1,2 +1,0 @@
-# Ukulele Chord Sequence Generator
-
