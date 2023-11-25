@@ -16,7 +16,9 @@ const progressions = [
 	$`I-VI7-II7-V-I`, // circus cadence
 	$`IV-ii-v-I`, // more minor,
 	$`v-ii-IV-I`, // ditto but moved around,
-	$`i7-IV-bVII-v`
+	$`i7-IV-bVII-v`,
+	$`i-V7-i-bVII-bIII-bVII-i`, // La Follia
+	$`i-iv-bVI-V`
 ];
 
 // G-G5-D-Adim7(no3)-Adim7-Em-A-D-D75 This sounds good

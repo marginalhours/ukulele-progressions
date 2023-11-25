@@ -35,6 +35,11 @@
 	export let style: DiagramStyle = defaultDiagramStyle;
 
 	const findLowestFret = (fretted: number[]) => {
+		// Exception for Am7 (lowest fretting is all open strings)
+		if (fretted.every((fret) => fret === 0)) {
+			return 1;
+		}
+
 		const maxFret = Math.max(...fretted);
 		let lowestFret = maxFret > 4 ? maxFret - 3 : 1;
 

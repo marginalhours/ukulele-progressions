@@ -47,7 +47,7 @@ export const relativeChordToString = (interval: RelativeChord): string => {
 		case 'major-7th':
 			return `${number}maj7`;
 		case 'minor-7th':
-			return `${number}min7`;
+			return `${number}m7`;
 		case '5':
 			return `${number}5`;
 		case '6':

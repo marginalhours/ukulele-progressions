@@ -44,7 +44,7 @@ export const chordToString = ({ tonic, quality }: ChordWithFlat): string => {
 		case 'major-7th':
 			return `${tonic}maj7`;
 		case 'minor-7th':
-			return `${tonic}min7`;
+			return `${tonic}m7`;
 		case '6':
 			return `${tonic}6`;
 		case '5':
