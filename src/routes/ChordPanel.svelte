@@ -1,19 +1,19 @@
 <script lang="ts">
 	import ChordDiagram from './ChordDiagram.svelte';
 	import { relativeChordToString, type RelativeChord } from '../lib/music/relativeChord';
-	import { type Chord, flatAwareChordToString } from '../lib/music/chords';
+	import { type Chord, flatAwareChordToString, intervalToChord } from '../lib/music/chords';
 	import Chevron from './Chevron.svelte';
 	import type { PitchWithFlats } from '../lib/music/types';
-	import { getFrettingsForChord } from '$lib/frettings';
+	import { getFrettingsForChord } from '../lib/frettings';
 
 	export let tonic: PitchWithFlats;
 	export let relativeChord: RelativeChord;
-	export let chord: Chord;
 
 	const resetOffset = (_: Chord) => 0;
 
 	$: availableFrettings = getFrettingsForChord(chord);
 	$: frettingOffset = resetOffset(chord);
+	$: chord = intervalToChord(tonic, relativeChord);
 
 	const onPreviousFretting = () => {
 		frettingOffset = (availableFrettings.length + frettingOffset - 1) % availableFrettings.length;
@@ -36,7 +36,7 @@
 		VIII: '#9b5fe0'
 	};
 
-	$: backgroundColor = BACKGROUNDS[relativeChord.number];
+	$: backgroundColor = BACKGROUNDS[relativeChord?.number];
 </script>
 
 <div class="chord-panel-wrapper">

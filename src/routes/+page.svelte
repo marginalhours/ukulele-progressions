@@ -4,13 +4,13 @@
 	import {
 		tonic,
 		progression,
-		chords,
 		randomizeApp,
 		randomizeTonic,
 		randomizeProgression,
 		setTonic,
 		previousProgression,
-		nextProgression
+		nextProgression,
+		trySetProgressionFromURL
 	} from './progressionStore';
 	import { relativeChordToString } from '$lib/music/relativeChord';
 	import Chevron from './Chevron.svelte';
@@ -20,6 +20,14 @@
 			randomizeApp();
 			e.preventDefault();
 		}
+	};
+
+	const onHashChange = () => {
+		trySetProgressionFromURL();
+	};
+
+	const onLoad = () => {
+		trySetProgressionFromURL();
 	};
 </script>
 
@@ -46,8 +54,8 @@
 		<h1>Ukulele Chord Progressions</h1>
 	</section>
 	<section class="fretting-section">
-		{#each $chords as _, index}
-			<ChordPanel tonic={$tonic} chord={$chords[index]} relativeChord={$progression[index]} />
+		{#each $progression as relativeChord}
+			<ChordPanel tonic={$tonic} {relativeChord} />
 		{/each}
 	</section>
 	<section class="progression-section">
@@ -95,7 +103,7 @@
 	</section>
 </main>
 
-<svelte:window on:keydown={onKeyDown} />
+<svelte:window on:keydown={onKeyDown} on:hashchange={onHashChange} on:load={onLoad} />
 
 <style>
 	main {
