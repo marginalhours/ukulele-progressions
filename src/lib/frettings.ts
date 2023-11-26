@@ -7,11 +7,6 @@ import { unflatten, type Pitch, type PitchWithFlats, type Quality } from './musi
  * pointing at arrays of frettings for that pitch and chord variant.
  * This is a massive data entry task but also not that bad. GLHF!
  */
-
-export const getFrettingForChord = ({ tonic, quality }: Chord, index: number = 0): number[] => {
-	return frettings[unflatten(tonic)][quality][index];
-};
-
 export const getFrettingsForChord = ({ tonic, quality }: Chord): number[][] => {
 	return frettings[unflatten(tonic)][quality];
 };

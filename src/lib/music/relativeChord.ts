@@ -139,3 +139,7 @@ export const parseRelativeChord = (intervalString: string): RelativeChord | null
 export const progression = (strings: TemplateStringsArray, ...values: any): RelativeChord[] => {
 	return strings[0].split(/[\s-]/).map(parseRelativeChord) as RelativeChord[];
 };
+
+export const progressionFromString = (string: string): RelativeChord[] => {
+	return string.split(/[\s-]/).map(parseRelativeChord) as RelativeChord[];
+};

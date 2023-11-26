@@ -6,6 +6,8 @@
 		progression,
 		chords,
 		randomizeApp,
+		randomizeTonic,
+		randomizeProgression,
 		setTonic,
 		previousProgression,
 		nextProgression
@@ -22,8 +24,21 @@
 </script>
 
 <svelte:head>
-	<title>Ukulele Chord Progression Generator</title>
-	<meta name="description" content="Ukulele Chord Progression Generator" />
+	<title>Ukulele Chord Progressions Toy</title>
+	<meta name="description" content="Ukulele Chord Progressions Toy" />
+
+	<meta name="twitter:card" content="summary_large_image" />
+	<meta name="twitter:site" content="@marginalhours" />
+	<meta name="twitter:creator" content="@marginalhours" />
+	<meta name="twitter:title" content="Ukulele Chord Progressions Toy" />
+	<meta name="twitter:description" content="Find your next favourite progression" />
+	<meta name="twitter:image" content="" />
+
+	<meta property="og:url" content="https:/marginalhours.net/ukulele-progressions" />
+	<meta property="og:type" content="article" />
+	<meta property="og:title" content="Ukulele Chord Progressions Toy" />
+	<meta property="og:description" content="Find your next favourite progression" />
+	<meta property="og:image" content="" />
 </svelte:head>
 
 <main>
@@ -36,7 +51,10 @@
 		{/each}
 	</section>
 	<section class="progression-section">
-		<h2 class="progression-title">Progression</h2>
+		<h2 class="progression-title">
+			progression
+			<button class="randomize-button" on:click={randomizeProgression}>randomize</button>
+		</h2>
 		<div class="progression-section-chords">
 			<button
 				on:click={previousProgression}
@@ -56,7 +74,10 @@
 		</div>
 	</section>
 	<section class="tonic-section">
-		<h2 class="tonic-title">Key</h2>
+		<h2 class="tonic-title">
+			key
+			<button class="randomize-button" on:click={randomizeTonic}>randomize</button>
+		</h2>
 		<div class="tonic-section-tonics">
 			{#each displayPitches as pitch}
 				<button
@@ -107,9 +128,9 @@
 
 	.progression-title {
 		font-weight: bold;
-		text-transform: lowercase;
 		margin: 0 auto;
 		margin-bottom: 1em;
+		position: relative;
 	}
 
 	.progression-control {
@@ -132,7 +153,6 @@
 
 	.progression-section-chords {
 		display: flex;
-		font-weight: medium;
 	}
 
 	.tonic-section {
@@ -145,9 +165,9 @@
 
 	.tonic-title {
 		font-weight: bold;
-		text-transform: lowercase;
 		margin: 0 auto;
 		margin-bottom: 1em;
+		position: relative;
 	}
 
 	.tonic-button {
@@ -179,16 +199,35 @@
 	}
 
 	.control-section {
-		margin-top: 4em;
+		margin: 4em 0;
 	}
 
-	.random-button {
-		font-weight: medium;
+	.randomize-button {
+		font-size: x-small;
 		cursor: pointer;
 		outline: none;
 		border: none;
 		border-radius: 5em;
-		padding: 0.5em 2em;
+		padding: 0.5em 1em;
+		background-color: rgba(155, 95, 224, 0.5);
+		position: absolute;
+		top: -80%;
+	}
+
+	.randomize-button:hover {
+		transform: translateY(-1px);
+	}
+
+	.randomize-button:active {
+		transform: translateY(2px);
+	}
+
+	.random-button {
+		cursor: pointer;
+		outline: none;
+		border: none;
+		border-radius: 5em;
+		padding: 0.5em 1.5em;
 		background-color: rgba(155, 95, 224, 0.5);
 	}
 
