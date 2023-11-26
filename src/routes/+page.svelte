@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { base } from '$app/paths';
 	import ChordPanel from './ChordPanel.svelte';
 	import { displayPitches } from '../lib/music/types';
 	import {
@@ -35,18 +36,20 @@
 	<title>Ukulele Chord Progressions Toy</title>
 	<meta name="description" content="Ukulele Chord Progressions Toy" />
 
+	<link rel="icon" type="image/x-icon" href="{base}/favicon.png" />
+
 	<meta name="twitter:card" content="summary_large_image" />
 	<meta name="twitter:site" content="@marginalhours" />
 	<meta name="twitter:creator" content="@marginalhours" />
 	<meta name="twitter:title" content="Ukulele Chord Progressions Toy" />
 	<meta name="twitter:description" content="Find your next favourite progression" />
-	<meta name="twitter:image" content="" />
+	<meta name="twitter:image" content="{base}/screenshot.png" />
 
 	<meta property="og:url" content="https:/marginalhours.net/ukulele-progressions" />
 	<meta property="og:type" content="article" />
 	<meta property="og:title" content="Ukulele Chord Progressions Toy" />
 	<meta property="og:description" content="Find your next favourite progression" />
-	<meta property="og:image" content="" />
+	<meta property="og:image" content="{base}/screenshot.png" />
 </svelte:head>
 
 <main>
