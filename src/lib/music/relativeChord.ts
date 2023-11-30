@@ -38,26 +38,52 @@ export const relativeChordToString = (interval: RelativeChord): string => {
 			return number;
 		case 'minor':
 			return number.toLowerCase();
-		case 'suspended-4th':
-			return `${number}sus4`;
-		case 'suspended-2nd':
-			return `${number}sus2`;
+		case '5':
+			return `${number}5`;
 		case 'dominant-7th':
 			return `${number}7`;
 		case 'major-7th':
 			return `${number}maj7`;
 		case 'minor-7th':
 			return `${number}m7`;
-		case '5':
-			return `${number}5`;
+		case 'minor-major-7th':
+			return `${number.toLowerCase()}maj7`;
+		case 'suspended-4th':
+			return `${number}sus4`;
+		case 'suspended-2nd':
+			return `${number}sus2`;
 		case '6':
 			return `${number}6`;
+		case 'minor-major-6':
+			return `${number.toLowerCase()}6`;
+		case 'major-add-9':
+			return `${number}add9`;
+		case 'minor-add-9':
+			return `${number.toLowerCase()}add9`;
+		case 'dominant-7th-flat-5':
+			return `${number}7b5`;
 		case 'augmented':
 			return `${number}aug`;
-		case 'diminished':
-			return `${number}dim`;
 		case 'augmented-7th':
 			return `${number}aug7`;
+		case 'minor-7th-flat-5':
+			return `${number.toLowerCase()}b5`;
+		case 'minor-7th-sharp-5':
+			return `${number.toLowerCase()}s5`;
+		case '6-suspended-4th':
+			return `${number}6sus4`;
+		case '6-suspended-2nd':
+			return `${number}6sus2`;
+		case 'dominant-7th-suspended-4th':
+			return `${number}7sus4`;
+		case 'dominant-7th-suspended-2nd':
+			return `${number}7sus2`;
+		case 'major-7th-suspended-4th':
+			return `${number}maj7sus4`;
+		case 'major-7th-suspended-2nd':
+			return `${number}maj7sus2`;
+		case 'diminished':
+			return `${number}dim`;
 		case 'diminished-7th':
 			return `${number}dim7`;
 		default:
@@ -81,7 +107,7 @@ export const relativeChordToString = (interval: RelativeChord): string => {
  */
 export const parseRelativeChord = (intervalString: string): RelativeChord | null => {
 	const matches = intervalString.match(
-		/^(b?[VI]+|[vi]+)(maj7|aug7|dim7|aug|dim|5|6|7|sus2|sus4){0,1}/
+		/^(b?[VI]+|[vi]+)(7sus4|7sus2|6sus4|6sus2|maj7sus4|maj7sus2|maj7|aug7|dim7|7b5|7s5|add9|sus4|sus2|aug|dim|7|6|5){0,1}/
 	);
 
 	if (matches === null) {
@@ -94,7 +120,31 @@ export const parseRelativeChord = (intervalString: string): RelativeChord | null
 
 	switch (rawQuality) {
 		case 'maj7':
-			quality = 'major-7th';
+			quality = quality === 'major' ? 'major-7th' : 'minor-major-7th';
+			break;
+		case '7sus4':
+			quality = 'dominant-7th-suspended-4th';
+			break;
+		case '7sus2':
+			quality = 'dominant-7th-suspended-2nd';
+			break;
+		case '7b5':
+			quality = quality === 'major' ? 'dominant-7th-flat-5' : 'minor-7th-flat-5';
+			break;
+		case '7s5':
+			quality = 'minor-7th-sharp-5';
+			break;
+		case '6sus4':
+			quality = '6-suspended-4th';
+			break;
+		case '6sus2':
+			quality = '6-suspended-2nd';
+			break;
+		case 'maj7sus4':
+			quality = 'major-7th-suspended-4th';
+			break;
+		case 'maj7sus2':
+			quality = 'major-7th-suspended-2nd';
 			break;
 		case 'aug7':
 			quality = 'augmented-7th';
@@ -112,7 +162,7 @@ export const parseRelativeChord = (intervalString: string): RelativeChord | null
 			quality = '5';
 			break;
 		case '6':
-			quality = '6';
+			quality = quality === 'major' ? '6' : 'minor-major-6';
 			break;
 		case '7':
 			quality = quality === 'major' ? 'dominant-7th' : 'minor-7th';
@@ -122,6 +172,9 @@ export const parseRelativeChord = (intervalString: string): RelativeChord | null
 			break;
 		case 'sus4':
 			quality = 'suspended-4th';
+			break;
+		case 'add9':
+			quality = `${quality}-add-9`;
 			break;
 	}
 

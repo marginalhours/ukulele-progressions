@@ -95,17 +95,30 @@ export const displayPitches = [
 export const qualities = [
 	'major',
 	'minor',
+	'5',
 	'dominant-7th',
 	'major-7th',
 	'minor-7th',
+	'minor-major-7th',
 	'suspended-4th',
 	'suspended-2nd',
-	'augmented',
-	'diminished',
-	'augmented-7th',
-	'diminished-7th',
 	'6',
-	'5'
+	'minor-major-6',
+	'major-add-9',
+	'minor-add-9',
+	'dominant-7th-flat-5',
+	'augmented',
+	'augmented-7th',
+	'minor-7th-flat-5',
+	'minor-7th-sharp-5',
+	'6-suspended-4th',
+	'6-suspended-2nd',
+	'dominant-7th-suspended-4th',
+	'dominant-7th-suspended-2nd',
+	'major-7th-suspended-4th',
+	'major-7th-suspended-2nd',
+	'diminished',
+	'diminished-7th'
 ];
 
 export type Quality = (typeof qualities)[number];

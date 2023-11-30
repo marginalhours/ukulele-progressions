@@ -23,8 +23,35 @@ const progressions = [
 	`i-V7-i-bVII-bIII-bVII-i`, // La Follia
 	`i-iv-bVI-V`,
 	`i-V7-v7-IV-bVI-bIII-IV-V7`, // hotel california
-	`I-Imaj7-I7-IV-V6-VI7-ii-V`
+	`I-Imaj7-I7-IV-V6-VI7-ii-V`,
+	`I-iii-IIIdim-IV-iv-I-ii-bIII`
 ];
+
+// URL hash utilities
+
+const trySetProgressionFromURL = () => {
+	if (hasProgressionInUrlHash()) {
+		progression.set(progressionFromURLHash());
+	}
+};
+
+const hasProgressionInUrlHash = () => {
+	if (!(browser && window.location.hash)) {
+		return false;
+	}
+
+	try {
+		const _ = progressionFromString(window.location.hash.substring(1));
+	} catch (err) {
+		return false;
+	}
+
+	return true;
+};
+
+const progressionFromURLHash = () => {
+	return progressionFromString(window.location.hash.substring(1));
+};
 
 // G-G5-D-Adim7(no3)-Adim7-Em-A-D-D75 This sounds good
 
@@ -32,7 +59,9 @@ const tonic = writable<PitchWithFlats>('C');
 const progressionIndex = writable<number>(0);
 
 // In fact this is mostly backed by the URL which is nice because hackable
-const progression = writable<RelativeChord[]>(progressionFromString(progressions[0]));
+const progression = writable<RelativeChord[]>(
+	hasProgressionInUrlHash() ? progressionFromURLHash() : progressionFromString(progressions[0])
+);
 
 progressionIndex.subscribe((index) => {
 	if (browser) {
@@ -70,32 +99,6 @@ const nextProgression = () => {
 const randomizeApp = () => {
 	randomizeTonic();
 	randomizeProgression();
-};
-
-// URL hash utilities
-
-const trySetProgressionFromURL = () => {
-	if (hasProgressionInUrlHash()) {
-		progression.set(progressionFromURLHash());
-	}
-};
-
-const hasProgressionInUrlHash = () => {
-	if (!(browser && window.location.hash)) {
-		return false;
-	}
-
-	try {
-		const _ = progressionFromString(window.location.hash.substring(1));
-	} catch (err) {
-		return false;
-	}
-
-	return true;
-};
-
-const progressionFromURLHash = () => {
-	return progressionFromString(window.location.hash.substring(1));
 };
 
 export {
