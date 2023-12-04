@@ -91,23 +91,12 @@ export const relativeChordToString = (interval: RelativeChord): string => {
 	}
 };
 
-// 1458: perfect
-// 2367: major
-//
-// major+1: augmented
-// major-1: minor
-// minor+1: major
-// minor-1: diminished
-//
-// perfect+1:augmented
-// perfect-1:diminished
-
 /*
  * Turn a guitar-style interval (vii, Vdim etc) into an Interval object
  */
 export const parseRelativeChord = (intervalString: string): RelativeChord | null => {
 	const matches = intervalString.match(
-		/^(b?[VI]+|[vi]+)(7sus4|7sus2|6sus4|6sus2|maj7sus4|maj7sus2|maj7|aug7|dim7|7b5|7s5|add9|sus4|sus2|aug|dim|7|6|5){0,1}/
+		/^(b?[VI]+|b?[vi]+)(7sus4|7sus2|6sus4|6sus2|maj7sus4|maj7sus2|maj7|aug7|dim7|7b5|7s5|add9|sus4|sus2|aug|dim|7|6|5){0,1}/
 	);
 
 	if (matches === null) {

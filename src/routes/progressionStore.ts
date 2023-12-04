@@ -24,7 +24,8 @@ const progressions = [
 	`i-iv-bVI-V`,
 	`i-V7-v7-IV-bVI-bIII-IV-V7`, // hotel california
 	`I-Imaj7-I7-IV-V6-VI7-ii-V`,
-	`I-iii-IIIdim-IV-iv-I-ii-bIII`
+	`I-iii-IIIdim-IV-iv-I-ii-bIII`,
+	`I-I5-I-V-IIdim7-bVIdim-vi-II-V-V7` //dunno but it's interesting
 ];
 
 // URL hash utilities
@@ -52,8 +53,6 @@ const hasProgressionInUrlHash = () => {
 const progressionFromURLHash = () => {
 	return progressionFromString(window.location.hash.substring(1));
 };
-
-// G-G5-D-Adim7(no3)-Adim7-Em-A-D-D75 This sounds good
 
 const tonic = writable<PitchWithFlats>('C');
 const progressionIndex = writable<number>(0);

@@ -199,6 +199,12 @@ describe('parseInterval', () => {
 			quality: 'major'
 		});
 	});
+	it('should parse a minor flat 6th', () => {
+		expect(parseRelativeChord('bvi')).toEqual({
+			number: 'bVI',
+			quality: 'minor'
+		});
+	});
 	it('should parse a flat 7th', () => {
 		expect(parseRelativeChord('bVII')).toEqual({
 			number: 'bVII',
