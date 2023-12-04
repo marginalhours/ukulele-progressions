@@ -9,17 +9,18 @@
 		randomizeTonic,
 		randomizeProgression,
 		setTonic,
-		previousProgression,
-		nextProgression,
 		trySetProgressionFromURL
 	} from './progressionStore';
 	import { relativeChordToString } from '$lib/music/relativeChord';
-	import Chevron from './Chevron.svelte';
 
-	const onKeyDown = (e: KeyboardEvent) => {
+	const onKeyUp = (e: KeyboardEvent) => {
 		if (e.code == 'Space') {
 			randomizeApp();
 			e.preventDefault();
+		} else if (e.code == 'KeyP') {
+			randomizeProgression();
+		} else if (e.code == 'KeyT') {
+			randomizeTonic();
 		}
 	};
 
@@ -67,21 +68,7 @@
 			<button class="randomize-button" on:click={randomizeProgression}>randomize</button>
 		</h2>
 		<div class="progression-section-chords">
-			<button
-				on:click={previousProgression}
-				class="progression-control progression-control-previous"
-				title="Previous progression"
-			>
-				<Chevron />
-			</button>
 			{$progression.map((p) => relativeChordToString(p)).join(' - ')}
-			<button
-				on:click={nextProgression}
-				class="progression-control progression-control-next"
-				title="Next progression"
-			>
-				<Chevron />
-			</button>
 		</div>
 	</section>
 	<section class="tonic-section">
@@ -106,7 +93,7 @@
 	</section>
 </main>
 
-<svelte:window on:keydown={onKeyDown} on:hashchange={onHashChange} on:load={onLoad} />
+<svelte:window on:keyup={onKeyUp} on:hashchange={onHashChange} on:load={onLoad} />
 
 <style>
 	main {
@@ -142,24 +129,6 @@
 		margin: 0 auto;
 		margin-bottom: 1em;
 		position: relative;
-	}
-
-	.progression-control {
-		cursor: pointer;
-		margin: 0 1em;
-		opacity: 0.7;
-		transition: opacity 100ms ease-in-out;
-		border: none;
-		background: none;
-	}
-
-	.progression-control:hover {
-		cursor: pointer;
-		opacity: 1;
-	}
-
-	.progression-control-previous {
-		transform: scaleX(-1);
 	}
 
 	.progression-section-chords {

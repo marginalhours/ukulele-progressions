@@ -33,6 +33,8 @@ const progressions = [
 const trySetProgressionFromURL = () => {
 	if (hasProgressionInUrlHash()) {
 		progression.set(progressionFromURLHash());
+	} else {
+		window.location.hash = chooseWithout(progressions, '');
 	}
 };
 
@@ -55,18 +57,11 @@ const progressionFromURLHash = () => {
 };
 
 const tonic = writable<PitchWithFlats>('C');
-const progressionIndex = writable<number>(0);
 
 // In fact this is mostly backed by the URL which is nice because hackable
 const progression = writable<RelativeChord[]>(
 	hasProgressionInUrlHash() ? progressionFromURLHash() : progressionFromString(progressions[0])
 );
-
-progressionIndex.subscribe((index) => {
-	if (browser) {
-		window.location.hash = progressions[index];
-	}
-});
 
 // Mutators
 
@@ -79,20 +74,7 @@ const randomizeTonic = () => {
 };
 
 const randomizeProgression = () => {
-	progressionIndex.update((current) =>
-		chooseWithout(
-			progressions.map((_, index) => index),
-			current
-		)
-	);
-};
-
-const previousProgression = () => {
-	progressionIndex.update((current) => (progressions.length + current - 1) % progressions.length);
-};
-
-const nextProgression = () => {
-	progressionIndex.update((current) => (progressions.length + current + 1) % progressions.length);
+	window.location.hash = chooseWithout(progressions, window.location.hash);
 };
 
 const randomizeApp = () => {
@@ -106,8 +88,6 @@ export {
 	setTonic,
 	randomizeTonic,
 	randomizeProgression,
-	previousProgression,
-	nextProgression,
 	trySetProgressionFromURL,
 	randomizeApp
 };
