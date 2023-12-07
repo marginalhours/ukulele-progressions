@@ -67,9 +67,9 @@ export const relativeChordToString = (interval: RelativeChord): string => {
 		case 'augmented-7th':
 			return `${number}aug7`;
 		case 'minor-7th-flat-5':
-			return `${number.toLowerCase()}b5`;
+			return `${number.toLowerCase()}7b5`;
 		case 'minor-7th-sharp-5':
-			return `${number.toLowerCase()}s5`;
+			return `${number.toLowerCase()}7s5`;
 		case '6-suspended-4th':
 			return `${number}6sus4`;
 		case '6-suspended-2nd':
