@@ -24,7 +24,7 @@ const progressions = [
 	`i-iv-bVI-V`,
 	`i-V7-v7-IV-bVI-bIII-IV-V7`, // hotel california
 	`I-Imaj7-I7-IV-V6-VI7-ii-V`,
-	`I-iii-IIIdim-IV-iv-I-ii-bIII`,
+	`I-iii-IIIdim-IV-iv-I-ii-V`,
 	`I-I5-I-V-IIdim7-bVIdim-vi-II-V-V7` //dunno but it's interesting
 ];
 
