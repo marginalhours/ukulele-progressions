@@ -1,8 +1,7 @@
-import { writable, derived } from 'svelte/store';
+import { writable } from 'svelte/store';
 import { chooseWithout } from '../lib/utilities';
-import { progressionFromString, type RelativeChord } from '../lib/music/relativeChord';
+import { progressionFromString, type UserChord } from '../lib/music/relativeChord';
 import { type Pitch, type PitchWithFlats, pitchesWithFlats } from '../lib/music/types';
-import { intervalToChord } from '../lib/music/chords';
 import { browser } from '$app/environment';
 
 const progressions = [
@@ -59,7 +58,7 @@ const progressionFromURLHash = () => {
 const tonic = writable<PitchWithFlats>('C');
 
 // In fact this is mostly backed by the URL which is nice because hackable
-const progression = writable<RelativeChord[]>(
+const progression = writable<UserChord[]>(
 	hasProgressionInUrlHash() ? progressionFromURLHash() : progressionFromString(progressions[0])
 );
 

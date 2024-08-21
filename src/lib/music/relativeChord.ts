@@ -5,10 +5,23 @@
 import { isLowerCase } from '../utilities';
 import type { Interval, Quality } from './types';
 
+export enum UserChordType {
+	RELATIVE = 'RELATIVE',
+	LITERAL = 'LITERAL'
+}
+
 export type RelativeChord = {
+	type: UserChordType.RELATIVE;
 	number: Interval;
 	quality: Quality;
 };
+
+export type LiteralFretting = {
+	type: UserChordType.LITERAL;
+	strings: number[];
+};
+
+export type UserChord = RelativeChord | LiteralFretting;
 
 const intervalNumberToSemitones: { [key in Interval]: number } = {
 	I: 0,
@@ -22,6 +35,19 @@ const intervalNumberToSemitones: { [key in Interval]: number } = {
 	bVII: 10,
 	VII: 11,
 	VIII: 12
+};
+
+export const userChordToString = (interval: UserChord): string => {
+	if (interval.type == UserChordType.RELATIVE) {
+		return relativeChordToString(interval);
+	} else if (interval.type == UserChordType.LITERAL) {
+		return literalChordToString(interval);
+	}
+	return '';
+};
+
+export const literalChordToString = (literal: LiteralFretting): string => {
+	return literal.strings.join('');
 };
 
 /** Just the semitones required to reach a different letter number */
@@ -89,6 +115,22 @@ export const relativeChordToString = (interval: RelativeChord): string => {
 		default:
 			return number;
 	}
+};
+
+export const parseLiteralFretting = (intervalString: string): LiteralFretting | null => {
+	const matches = intervalString.match(/(\d)/g);
+
+	if (matches == null) {
+		return null;
+	}
+
+	return {
+		type: UserChordType.LITERAL,
+		strings: matches
+			.map((x) => parseInt(x, 10))
+			.concat(Array(4).fill(0))
+			.slice(0, 4)
+	};
 };
 
 /*
@@ -172,16 +214,20 @@ export const parseRelativeChord = (intervalString: string): RelativeChord | null
 		number = `b${number.substring(1)}`;
 	}
 
-	return { number: number as Interval, quality };
+	return { number: number as Interval, quality, type: UserChordType.RELATIVE };
+};
+
+export const parseUserChord = (intervalString: string): UserChord | null => {
+	return parseRelativeChord(intervalString) || parseLiteralFretting(intervalString);
 };
 
 /*
  * Fancy tagged template literal for writing progressions like $`I iii IV V`
  */
 export const progression = (strings: TemplateStringsArray, ...values: any): RelativeChord[] => {
-	return strings[0].split(/[\s-]/).map(parseRelativeChord) as RelativeChord[];
+	return strings[0].split(/[\s-]/).map(parseUserChord) as RelativeChord[];
 };
 
 export const progressionFromString = (string: string): RelativeChord[] => {
-	return string.split(/[\s-]/).map(parseRelativeChord) as RelativeChord[];
+	return string.split(/[\s-]/).map(parseUserChord) as RelativeChord[];
 };
