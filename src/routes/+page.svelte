@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { base } from '$app/paths';
 	import ChordPanel from './ChordPanel.svelte';
+	import LiteralPanel from './LiteralPanel.svelte';
 	import { displayPitches } from '../lib/music/types';
 	import {
 		tonic,
@@ -11,7 +12,11 @@
 		setTonic,
 		trySetProgressionFromURL
 	} from './progressionStore';
-	import { relativeChordToString } from '$lib/music/relativeChord';
+	import {
+		relativeChordToString,
+		userChordToString,
+		UserChordType
+	} from '$lib/music/relativeChord';
 
 	const onKeyUp = (e: KeyboardEvent) => {
 		if (e.code == 'Space') {
@@ -59,8 +64,12 @@
 		<h2>also available in <a href="https://marginalhours.net/guitar-progressions">guitar</a></h2>
 	</section>
 	<section class="fretting-section">
-		{#each $progression as relativeChord}
-			<ChordPanel tonic={$tonic} {relativeChord} />
+		{#each $progression as userChord}
+			{#if userChord.type == UserChordType.RELATIVE}
+				<ChordPanel tonic={$tonic} relativeChord={userChord} />
+			{:else if userChord.type == UserChordType.LITERAL}
+				<LiteralPanel literalChord={userChord} />
+			{/if}
 		{/each}
 	</section>
 	<section class="progression-section">
@@ -69,7 +78,7 @@
 			<button class="randomize-button" on:click={randomizeProgression}>randomize</button>
 		</h2>
 		<div class="progression-section-chords">
-			{$progression.map((p) => relativeChordToString(p)).join(' - ')}
+			{$progression.map((p) => userChordToString(p)).join(' - ')}
 		</div>
 	</section>
 	<section class="tonic-section">
