@@ -18,7 +18,7 @@ export type RelativeChord = {
 
 export type LiteralFretting = {
 	type: UserChordType.LITERAL;
-	strings: number[];
+	strings: (number | null)[];
 };
 
 export type UserChord = RelativeChord | LiteralFretting;
@@ -37,6 +37,18 @@ const intervalNumberToSemitones: { [key in Interval]: number } = {
 	VIII: 12
 };
 
+const semitoneToInterval: Partial<Record<number, Interval>> = Object.fromEntries(
+	Object.entries(intervalNumberToSemitones).map(([interval, semitones]) => [
+		semitones,
+		interval as Interval
+	])
+);
+
+export const semitonesToInterval = (semitones: number): Interval | null => {
+	const normalized = ((semitones % 12) + 12) % 12;
+	return semitoneToInterval[normalized] ?? null;
+};
+
 export const userChordToString = (interval: UserChord): string => {
 	if (interval.type == UserChordType.RELATIVE) {
 		return relativeChordToString(interval);
@@ -47,7 +59,7 @@ export const userChordToString = (interval: UserChord): string => {
 };
 
 export const literalChordToString = (literal: LiteralFretting): string => {
-	return literal.strings.join('');
+	return literal.strings.map((fret) => (fret == null ? 'x' : fret)).join('');
 };
 
 /** Just the semitones required to reach a different letter number */
@@ -118,18 +130,13 @@ export const relativeChordToString = (interval: RelativeChord): string => {
 };
 
 export const parseLiteralFretting = (intervalString: string): LiteralFretting | null => {
-	const matches = intervalString.match(/(\d)/g);
+	const matches = intervalString.match(/^[0-9x]{4}$/i);
 
-	if (matches == null) {
-		return null;
-	}
+	if (matches == null) return null;
 
 	return {
 		type: UserChordType.LITERAL,
-		strings: matches
-			.map((x) => parseInt(x, 10))
-			.concat(Array(4).fill(0))
-			.slice(0, 4)
+		strings: intervalString.toLowerCase().split('').map((x) => (x === 'x' ? null : parseInt(x, 10)))
 	};
 };
 

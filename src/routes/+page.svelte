@@ -64,11 +64,11 @@
 		<h2>also available in <a href="https://marginalhours.net/guitar-progressions">guitar</a></h2>
 	</section>
 	<section class="fretting-section">
-		{#each $progression as userChord}
+		{#each $progression as userChord, index}
 			{#if userChord.type == UserChordType.RELATIVE}
 				<ChordPanel tonic={$tonic} relativeChord={userChord} />
 			{:else if userChord.type == UserChordType.LITERAL}
-				<LiteralPanel literalChord={userChord} />
+				<LiteralPanel literalChord={userChord} tonic={$tonic} index={index} />
 			{/if}
 		{/each}
 	</section>
@@ -129,7 +129,7 @@
 		display: flex;
 		flex-direction: row;
 		justify-content: center;
-		align-items: center;
+		align-items: flex-start;
 		flex-wrap: wrap;
 	}
 

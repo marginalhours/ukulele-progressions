@@ -23,3 +23,9 @@ export const transposePitch = (pitch: Pitch, semitones: number): Pitch => {
 	const pitchIndex = pitchToIndex[pitch];
 	return pitches[(pitchIndex + semitones) % pitches.length];
 };
+
+export const semitoneDistance = (from: Pitch, to: Pitch): number => {
+	const fromIndex = pitchToIndex[from];
+	const toIndex = pitchToIndex[to];
+	return (toIndex - fromIndex + pitches.length) % pitches.length;
+};
