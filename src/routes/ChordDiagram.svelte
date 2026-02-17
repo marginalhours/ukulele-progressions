@@ -27,24 +27,30 @@
 		lineWidth: 3,
 		marginLeft: 28,
 		marginRight: 42,
-		marginTop: 5,
+		marginTop: 21,
 		marginBottom: 5
 	};
 
 	export let fretted: (number | null)[] = [];
 	export let style: DiagramStyle = defaultDiagramStyle;
 
-	const findLowestFret = (fretted: number[]) => {
-		// Exception for Am7 (lowest fretting is all open strings)
-		if (fretted.every((fret) => fret === 0)) {
+	const findLowestFret = (fretted: (number | null)[]) => {
+		const numericFrets = fretted.filter((fret): fret is number => fret != null);
+
+		if (numericFrets.length === 0) {
 			return 1;
 		}
 
-		const maxFret = Math.max(...fretted);
+		// Exception for Am7 (lowest fretting is all open strings)
+		if (numericFrets.every((fret) => fret === 0)) {
+			return 1;
+		}
+
+		const maxFret = Math.max(...numericFrets);
 		let lowestFret = maxFret > 4 ? maxFret - 3 : 1;
 
 		for (let i = 0; i < 25; i++) {
-			if (fretted.every((fret) => fret === 0 || fret > lowestFret)) {
+			if (fretted.every((fret) => fret == null || fret === 0 || fret > lowestFret)) {
 				lowestFret += 1;
 			} else {
 				break;
@@ -62,13 +68,14 @@
 	// Layout calculations
 
 	const diagramWidth = 140;
-	const diagramHeight = 150;
+	const diagramHeight = 170;
 	const dotRadius = 10;
 	const labelFontSize = 24;
+	const mutedFontSize = 18;
 
 	const diagramStyle = { ...style, ...defaultDiagramStyle };
 	$: lowestFret = findLowestFret(fretted);
-	$: relativeFrets = fretted.map((fret) => fret - lowestFret);
+	$: relativeFrets = fretted.map((fret) => (fret == null ? null : fret - lowestFret));
 
 	const boardWidth = diagramWidth - (diagramStyle.marginLeft + diagramStyle.marginRight);
 	const boardHeight = diagramHeight - (diagramStyle.marginTop + diagramStyle.marginBottom);
@@ -102,6 +109,8 @@
 		diagramStyle.marginLeft + Math.floor((2 / 3) * boardWidth),
 		diagramStyle.marginLeft + Math.floor((3 / 3) * boardWidth)
 	];
+
+	const mutedYCoord = Math.max(mutedFontSize / 2 + 1, diagramStyle.marginTop - diagramStyle.lineWidth * 4);
 </script>
 
 <svg
@@ -186,7 +195,18 @@
 	/>
 
 	<!-- Fretted strings -->
-	{#if relativeFrets[0] >= 0}
+	{#if fretted[0] == null}
+		<text
+			x={dotXcoords[0]}
+			y={mutedYCoord}
+			class="chord-diagram-muted"
+			font-size={mutedFontSize}
+			text-anchor="middle"
+			dominant-baseline="central"
+			>x</text
+		>
+	{/if}
+	{#if relativeFrets[0] != null && relativeFrets[0] >= 0}
 		<circle
 			class="chord-diagram-note"
 			transition:fade
@@ -196,7 +216,18 @@
 			r={dotRadius}
 		/>
 	{/if}
-	{#if relativeFrets[1] >= 0}
+	{#if fretted[1] == null}
+		<text
+			x={dotXcoords[1]}
+			y={mutedYCoord}
+			class="chord-diagram-muted"
+			font-size={mutedFontSize}
+			text-anchor="middle"
+			dominant-baseline="central"
+			>x</text
+		>
+	{/if}
+	{#if relativeFrets[1] != null && relativeFrets[1] >= 0}
 		<circle
 			class="chord-diagram-note"
 			transition:fade
@@ -206,7 +237,18 @@
 			r={dotRadius}
 		/>
 	{/if}
-	{#if relativeFrets[2] >= 0}
+	{#if fretted[2] == null}
+		<text
+			x={dotXcoords[2]}
+			y={mutedYCoord}
+			class="chord-diagram-muted"
+			font-size={mutedFontSize}
+			text-anchor="middle"
+			dominant-baseline="central"
+			>x</text
+		>
+	{/if}
+	{#if relativeFrets[2] != null && relativeFrets[2] >= 0}
 		<circle
 			class="chord-diagram-note"
 			transition:fade
@@ -216,7 +258,18 @@
 			r={dotRadius}
 		/>
 	{/if}
-	{#if relativeFrets[3] >= 0}
+	{#if fretted[3] == null}
+		<text
+			x={dotXcoords[3]}
+			y={mutedYCoord}
+			class="chord-diagram-muted"
+			font-size={mutedFontSize}
+			text-anchor="middle"
+			dominant-baseline="central"
+			>x</text
+		>
+	{/if}
+	{#if relativeFrets[3] != null && relativeFrets[3] >= 0}
 		<circle
 			class="chord-diagram-note"
 			transition:fade
@@ -253,5 +306,11 @@
 
 	.chord-diagram-fret-label {
 		font: sans-serif;
+	}
+
+	.chord-diagram-muted {
+		font: sans-serif;
+		font-weight: bold;
+		fill: #444;
 	}
 </style>

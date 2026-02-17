@@ -1,6 +1,6 @@
 import { writable } from 'svelte/store';
 import { chooseWithout } from '../lib/utilities';
-import { progressionFromString, type UserChord } from '../lib/music/relativeChord';
+import { progressionFromString, userChordToString, type UserChord } from '../lib/music/relativeChord';
 import { type Pitch, type PitchWithFlats, pitchesWithFlats } from '../lib/music/types';
 import { browser } from '$app/environment';
 
@@ -81,6 +81,16 @@ const randomizeApp = () => {
 	randomizeProgression();
 };
 
+const replaceChordAt = (index: number, chord: UserChord) => {
+	progression.update((current) => {
+		if (index < 0 || index >= current.length) return current;
+		const next = [...current];
+		next[index] = chord;
+		window.location.hash = next.map((c) => userChordToString(c)).join('-');
+		return next;
+	});
+};
+
 export {
 	tonic,
 	progression,
@@ -88,5 +98,6 @@ export {
 	randomizeTonic,
 	randomizeProgression,
 	trySetProgressionFromURL,
-	randomizeApp
+	randomizeApp,
+	replaceChordAt
 };

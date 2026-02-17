@@ -11,6 +11,37 @@ export const getFrettingsForChord = ({ tonic, quality }: Chord): number[][] => {
 	return frettings[unflatten(tonic)][quality];
 };
 
+export const findChordsForFretting = (fretting: (number | null)[]): Chord[] => {
+	const matches: Chord[] = [];
+	const seen = new Set<string>();
+
+	for (const tonic of Object.keys(frettings) as Pitch[]) {
+		const qualities = frettings[tonic];
+		for (const quality of Object.keys(qualities) as Quality[]) {
+			for (const candidate of qualities[quality]) {
+				let isMatch = true;
+				for (let i = 0; i < 4; i++) {
+					const expected = fretting[i];
+					if (expected == null) continue;
+					if (candidate[i] !== expected) {
+						isMatch = false;
+						break;
+					}
+				}
+				if (isMatch) {
+					const key = `${tonic}:${quality}`;
+					if (!seen.has(key)) {
+						seen.add(key);
+						matches.push({ tonic, quality });
+					}
+				}
+			}
+		}
+	}
+
+	return matches;
+};
+
 const frettings: Record<Pitch, Record<Quality, number[][]>> = {
 	'D#': {
 		'minor-major-7th': [
